@@ -1,0 +1,58 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "docstring-auditor"
+version = "0.1.0"
+authors = [{name = "Rob Luke", email = "code@robertluke.net"}]
+description = "A tool to analyze Python functions' docstrings and provide critiques and suggestions for improvement"
+readme = "README.md"
+keywords = ["docstring", "auditor", "openai", "gpt"]
+url = "https://github.com/rob-luke/docstring-auditor"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+[tool.hatch.package]
+packages = ["docstring_auditor"]
+
+[tool.hatch.entry_points]
+console_scripts = [
+    "docstring-auditor = docstring_auditor:main",
+]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "click",
+    "openai",
+]
+
+[tool.hatch.envs.dev]
+dependencies = [
+    "click",
+    "openai",
+    "mypy",
+    "black",
+    "pytest",
+]
+python_requires = ">=3.6"
+
+[tool.hatch.envs.dev.scripts]
+lint-types = "mypy docstring_auditor"
+lint-format = "black tests docstring_auditor"
+tests = "pytest tests"
+
+[tool.black]
+line_length = 88
+target_version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']

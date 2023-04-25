@@ -61,8 +61,6 @@ def ask_for_critique(function: str):
     function : str
         A string containing the code and the docstring for the Python function.
         The input should be formatted as a single string, with the code and docstring combined.
-        For example, the following is a valid input:
-        'def return_one():\n    \"\"\"Return the number one.\"\"\"\n    return 1'
 
     Returns
     -------
@@ -89,7 +87,7 @@ def ask_for_critique(function: str):
         "Would an extended summary help the user understand the function better? Be verbose. "
         "Is there adequate description of types and defaults? "
         "Or does it document functionality that does not exist in the code?\n\n"
-        "Do not worry about import statements or errors.\n\n"
+        "Do not provide errors or warnings about imports.\n\n"
         "Provide your response as JSON with the following format (do not return any additional text):\n"
         "{\n"
         '    "function": "Return the name of the function.",\n'

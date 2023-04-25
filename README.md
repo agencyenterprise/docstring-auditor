@@ -11,7 +11,7 @@ Docstring Auditor is a powerful and user-friendly tool that analyzes Python func
 
 
 ## Installation
-To install Docstring Auditor, simply run:
+To install Docstring Auditor, first, ensure you have Python 3.6 or higher installed. Then, install with:
 
 ```bash
 pip install docstring-auditor
