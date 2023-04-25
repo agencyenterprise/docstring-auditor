@@ -1,6 +1,7 @@
 # Docstring Auditor
 
 [![tests](https://github.com/rob-luke/docstring-auditor/actions/workflows/test.yml/badge.svg)](https://github.com/rob-luke/docstring-auditor/actions/workflows/test.yml)
+[![Release](https://github.com/rob-luke/docstring-auditor/actions/workflows/release.yml/badge.svg)](https://github.com/rob-luke/docstring-auditor/actions/workflows/release.yml)
 
 Meet _Docstring Auditor_, your go-to solution for maintaining precise and up-to-date Python code documentation. Tired of misleading or outdated docstrings? Docstring Auditor harnesses the power of large language models to analyze and critique your docstrings, ensuring they align with your code's true purpose. Accessible to both experts and novices, Docstring Auditor is your ultimate companion for clear, concise, and informative docstrings. Say hello to better code documentation!
 
