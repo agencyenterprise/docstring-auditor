@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import click
 import ast
 import json
@@ -157,17 +158,9 @@ def report_concerns(response_dict: Dict[str, str]) -> bool:
         return True
 
 
-@click.command(name="DocstringAuditor")
-@click.argument(
-    "file_path", type=click.Path(exists=True, readable=True), default=__file__
-)
-def docstring_auditor(file_path: str):
+def process_file(file_path: str):
     """
-    Analyze Python functions' docstrings in a given file and provide critiques and suggestions for improvement.
-
-    This program reads a Python file, extracts the functions and their docstrings,
-    and then analyzes the docstrings for errors, warnings,
-    and possible improvements. The critiques and suggestions are then displayed to the user.
+    Process a single Python file and analyze its functions' docstrings.
 
     Parameters
     ----------
@@ -182,10 +175,81 @@ def docstring_auditor(file_path: str):
     functions = extract_functions(file_path)
 
     for idx, function in enumerate(functions):
-        print(f"Processing function {idx + 1} of {len(functions)}...")
+        print(
+            f"Processing function {idx + 1} of {len(functions)} in file {file_path}..."
+        )
         assert isinstance(function, str)
         critique = ask_for_critique(function)
         report_concerns(critique)
+
+
+def process_directory(directory_path: str, ignore_dirs: Optional[List[str]] = None):
+    """
+    Recursively process all .py files in a directory and its subdirectories, ignoring specified directories.
+
+    Parameters
+    ----------
+    directory_path : str
+        The path to the directory containing .py files to analyze the functions' docstrings.
+
+    ignore_dirs : Optional[List[str]]
+        A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
+
+    Returns
+    -------
+    None
+        The function does not return any value. It prints the critiques and suggestions for the docstrings in the .py files.
+    """
+    if ignore_dirs is None:
+        ignore_dirs = ["tests"]
+
+    for root, dirs, files in os.walk(directory_path):
+        dirs[:] = [d for d in dirs if d not in ignore_dirs]
+
+        for file in files:
+            if file.endswith(".py"):
+                file_path = os.path.join(root, file)
+                process_file(file_path)
+
+
+@click.command(name="DocstringAuditor")
+@click.argument("path", type=click.Path(exists=True, readable=True), default=__file__)
+@click.option(
+    "--ignore-dirs",
+    type=click.STRING,
+    multiple=True,
+    default=["tests"],
+    help="A list of directory names to ignore while processing .py files. Separate multiple directories with a space.",
+)
+def docstring_auditor(path: str, ignore_dirs: List[str]):
+    """
+    Analyze Python functions' docstrings in a given file or directory and provide critiques and suggestions for improvement.
+
+    This program reads a Python file or directory, extracts the functions and their docstrings,
+    and then analyzes the docstrings for errors, warnings,
+    and possible improvements. The critiques and suggestions are then displayed to the user.
+
+    Parameters
+    ----------
+    path : str
+        The path to the .py file or directory to analyze the functions' docstrings.
+
+    ignore_dirs : List[str]
+        A list of directory names to ignore while processing .py files.
+
+    Returns
+    -------
+    None
+        The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
+    """
+    if os.path.isfile(path):
+        process_file(path)
+    elif os.path.isdir(path):
+        process_directory(path, ignore_dirs)
+    else:
+        click.secho(
+            "Invalid path. Please provide a valid file or directory path.", fg="red"
+        )
 
 
 if __name__ == "__main__":

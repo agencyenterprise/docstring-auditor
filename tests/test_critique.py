@@ -143,13 +143,22 @@ def mock_chatcompletion_create_warning_and_solution(*args, **kwargs):
     return response
 
 
-
-@pytest.fixture(params=[mock_chatcompletion_create_no_errors_warnings,
-                       mock_chatcompletion_create_only_warning,
-                       mock_chatcompletion_create_only_error,
-                       mock_chatcompletion_create_error_and_solution,
-                       mock_chatcompletion_create_warning_and_solution],
-                ids=["no_errors_warnings", "only_warning", "only_error", "error_and_solution", "warning_and_solution"])
+@pytest.fixture(
+    params=[
+        mock_chatcompletion_create_no_errors_warnings,
+        mock_chatcompletion_create_only_warning,
+        mock_chatcompletion_create_only_error,
+        mock_chatcompletion_create_error_and_solution,
+        mock_chatcompletion_create_warning_and_solution,
+    ],
+    ids=[
+        "no_errors_warnings",
+        "only_warning",
+        "only_error",
+        "error_and_solution",
+        "warning_and_solution",
+    ],
+)
 def openai_mock(monkeypatch, request):
     monkeypatch.setattr(openai.ChatCompletion, "create", request.param)
     return request  # Return the request object
@@ -165,7 +174,9 @@ def test_ask_for_critique(openai_mock):
     response_dict = ask_for_critique(function)
     assert response_dict["function"].startswith("test_function_")
 
-    current_test_id = openai_mock.param.__name__  # Access the current mock function's name
+    current_test_id = (
+        openai_mock.param.__name__
+    )  # Access the current mock function's name
     if "no_errors_warnings" in current_test_id:
         assert response_dict["error"] == ""
         assert response_dict["warning"] == ""
