@@ -24,7 +24,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build docker image
-        run: docker build -t ghcr.io/rob-luke/docstring-auditor .
+        run: docker build -t docstring-auditor .
+
+      - name: Rename base image tag for release
+        run: docker tag docstring-auditor ghcr.io/rob-luke/docstring-auditor:main
 
       - name: List docker images
         run: docker images
