@@ -8,3 +8,13 @@ runs:
 branding:
   icon: 'check-square'
   color: 'white'
+
+inputs:
+  analysis-path:
+    description: 'Path to the file or directory you wish to analyse'
+    required: false
+    default: '/repo'
+  openai-api-key:
+    description: 'Your OpenAI API key'
+    required: true
+    default: 'sk-XXXX'
