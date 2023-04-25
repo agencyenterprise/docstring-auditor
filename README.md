@@ -34,26 +34,14 @@ The easiest way to use Docstring Auditor is with Docker
 docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor
 ```
 
-
-### Local Installation
-You can also run Docstring Auditor locally by following these steps:
-
-1. Install [Python 3.6+](https://www.python.org/downloads/)
-2. Install [Git](https://git-scm.com/downloads)
-3. Clone the repository: `git clone git@github.com:rob-luke/docstring-auditor.git`
-4. Setup hatch: `pip install hatch`
-5. Run the package `hatch run docstring-auditor /path/to/your/python_file.py`
-
-
 ## Usage
-Using Docstring Auditor is as easy as running the following command:
+If you use the docker command above, Docstring Auditor will analyse all python files in your directory.
+If you wish for it to analyse a single file, pass in the file name with the repo prefix.
+For example, to analyse the file in  `src/module/file.py`...
 
 ```bash
-docstring-auditor path/to/your/python_file.py
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor /repo/src/module/file.py
 ```
-
-You can pass in a single file to analyse, or you can pass in a directory and it will analyse every file.
-
 The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
 ## Example
@@ -125,6 +113,26 @@ int or float
 
 ```
 
+## Limitations
+
+1. There is currently no checking for malformed json from GPT4. Occasionaly GPT4 will return a bad json and the program will crash.
+2. There is no rate limiting on the GPT4 calls.
+3. Only GPT4 is included. It would be trivial to make this a variable. Pull requests are welcome.
+
+
 ## Contributing
 We welcome contributions to Docstring Auditor! If you'd like to contribute, please fork the repository and submit a pull request with your changes. We also appreciate bug reports and feature requests submitted through the GitHub issues page.
+
+
+## Advanced Usage
+
+### Local Installation
+You can also run Docstring Auditor locally by following these steps:
+
+1. Install [Python 3.6+](https://www.python.org/downloads/)
+2. Install [Git](https://git-scm.com/downloads)
+3. Clone the repository: `git clone git@github.com:rob-luke/docstring-auditor.git`
+4. Setup hatch: `pip install hatch`
+5. Run the package `hatch run docstring-auditor /path/to/your/python_file.py`
+
 
