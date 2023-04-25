@@ -18,3 +18,9 @@ inputs:
     description: 'Your OpenAI API key'
     required: true
     default: 'sk-XXXX'
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo I will process ${{ inputs.analysis-path }}.
+      shell: bash
