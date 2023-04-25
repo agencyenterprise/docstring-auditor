@@ -27,10 +27,8 @@ classifiers = [
 [tool.hatch.package]
 packages = ["docstring_auditor"]
 
-[tool.hatch.entry_points]
-console_scripts = [
-    "docstring-auditor = docstring_auditor:main",
-]
+[tool.hatch.envs.default.scripts]
+docstring-auditor = "python docstring_auditor/main.py {args}"
 
 [tool.hatch.envs.default]
 dependencies = [
