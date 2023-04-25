@@ -39,7 +39,7 @@ docstring-auditor path/to/your/python_file.py
 
 The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
-Example
+## Example
 Let's say you have a Python file called example.py with the following content:
 
 ```python
