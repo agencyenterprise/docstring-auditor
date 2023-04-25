@@ -153,7 +153,7 @@ def report_concerns(response_dict: Dict[str, str]) -> bool:
             )
             click.secho(f"{warning}\n", fg="yellow")
         if solution:
-            print(f"A proposed solution to these concerns is:\n\n{solution}\n\n")
+            click.secho(f"A proposed solution to these concerns is:\n\n{solution}\n\n")
         return True
 
 
