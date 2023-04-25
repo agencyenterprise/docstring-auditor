@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
+import os
 import click
 import ast
 import json
 from typing import List, Optional, Dict
 import openai
-import os
 
 
 def extract_functions(file_path: str) -> List[Optional[str]]:
