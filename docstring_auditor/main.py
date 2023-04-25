@@ -3,11 +3,11 @@
 import click
 import ast
 import json
-from typing import List
+from typing import List, Optional, Dict
 import openai
 
 
-def extract_functions(file_path: str) -> List[str]:
+def extract_functions(file_path: str) -> List[Optional[str]]:
     """
     Extract functions from a Python file.
 
@@ -52,7 +52,7 @@ def extract_functions(file_path: str) -> List[str]:
     return functions
 
 
-def ask_for_critique(function: str):
+def ask_for_critique(function: str) -> Dict[str, str]:
     """
     Query OpenAI for a critique of the docstring for a function.
 
@@ -116,7 +116,7 @@ def ask_for_critique(function: str):
     return response_dict
 
 
-def report_concerns(response_dict: dict) -> bool:
+def report_concerns(response_dict: Dict[str, str]) -> bool:
     """
     Inform the user of any concerns with the docstring.
 
@@ -180,8 +180,10 @@ def docstring_auditor(file_path: str):
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file.
     """
     functions = extract_functions(file_path)
+
     for idx, function in enumerate(functions):
         print(f"Processing function {idx + 1} of {len(functions)}...")
+        assert isinstance(function, str)
         critique = ask_for_critique(function)
         report_concerns(critique)
 

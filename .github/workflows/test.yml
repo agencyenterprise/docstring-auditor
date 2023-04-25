@@ -37,3 +37,9 @@ jobs:
 
     - name: Run tests
       run: hatch run dev:tests
+
+    - name: Run type checking
+      run: hatch run dev:lint-types
+
+    - name: Run format checking
+      run: hatch run dev:lint-format
