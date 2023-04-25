@@ -143,24 +143,16 @@ def mock_chatcompletion_create_warning_and_solution(*args, **kwargs):
     return response
 
 
-@pytest.fixture(
-    params=[
-        mock_chatcompletion_create_no_errors_warnings,
-        mock_chatcompletion_create_only_warning,
-        mock_chatcompletion_create_only_error,
-        mock_chatcompletion_create_error_and_solution,
-        mock_chatcompletion_create_warning_and_solution,
-    ],
-    ids=[
-        "no_errors_warnings",
-        "only_warning",
-        "only_error",
-        "error_and_solution",
-        "warning_and_solution",
-    ],
-)
+
+@pytest.fixture(params=[mock_chatcompletion_create_no_errors_warnings,
+                       mock_chatcompletion_create_only_warning,
+                       mock_chatcompletion_create_only_error,
+                       mock_chatcompletion_create_error_and_solution,
+                       mock_chatcompletion_create_warning_and_solution],
+                ids=["no_errors_warnings", "only_warning", "only_error", "error_and_solution", "warning_and_solution"])
 def openai_mock(monkeypatch, request):
     monkeypatch.setattr(openai.ChatCompletion, "create", request.param)
+    return request  # Return the request object
 
 
 def test_ask_for_critique(openai_mock):
@@ -173,23 +165,24 @@ def test_ask_for_critique(openai_mock):
     response_dict = ask_for_critique(function)
     assert response_dict["function"].startswith("test_function_")
 
-    if "no_errors_warnings" in openai_mock.ids:
+    current_test_id = openai_mock.param.__name__  # Access the current mock function's name
+    if "no_errors_warnings" in current_test_id:
         assert response_dict["error"] == ""
         assert response_dict["warning"] == ""
         assert response_dict["solution"] == ""
-    elif "only_warning" in openai_mock.ids:
+    elif "only_warning" in current_test_id:
         assert response_dict["error"] == ""
         assert response_dict["warning"] == "A warning occurred."
         assert response_dict["solution"] == ""
-    elif "only_error" in openai_mock.ids:
+    elif "only_error" in current_test_id:
         assert response_dict["error"] == "An error occurred."
         assert response_dict["warning"] == ""
         assert response_dict["solution"] == "Updated docstring."
-    elif "error_and_solution" in openai_mock.ids:
+    elif "error_and_solution" in current_test_id:
         assert response_dict["error"] == "An error occurred."
         assert response_dict["warning"] == ""
         assert response_dict["solution"] == "Updated docstring."
-    elif "warning_and_solution" in openai_mock.ids:
+    elif "warning_and_solution" in current_test_id:
         assert response_dict["error"] == ""
         assert response_dict["warning"] == "A warning occurred."
         assert response_dict["solution"] == "Updated docstring."

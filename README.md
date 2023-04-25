@@ -1,6 +1,13 @@
 # Docstring Auditor
 
-Docstring Auditor is a powerful and user-friendly tool that analyzes Python functions' docstrings and provides insightful critiques and suggestions for improvement. With the help of OpenAI's GPT, this tool ensures that your docstrings are clear, concise, and follow the best practices, making your code more maintainable and easier to understand.
+Introducing "Docstring Auditor," a cutting-edge solution to ensure that your Python code documentation remains accurate and up-to-date.
+Tired of encountering misleading or outdated docstrings that no longer align with your code's functionality? You're not alone!
+That's why we've developed Docstring Auditor, a powerful tool that leverages the prowess of large language models
+to analyze and critique your docstrings, ensuring they accurately reflect your code's true purpose.
+Say goodbye to technical discrepancies and confusing descriptions.
+With Docstring Auditor, you can effortlessly bridge the gap between your code and its documentation,
+making it more accessible and understandable to both experts and novices alike.
+Step into the future of code documentation with Docstring Auditor – the ultimate companion for maintaining crystal-clear, precise, and informative docstrings.
 
 ## Features
 - Analyzes Python functions' docstrings in a given file
