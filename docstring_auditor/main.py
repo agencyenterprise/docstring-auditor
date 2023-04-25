@@ -213,15 +213,13 @@ def process_directory(directory_path: str, ignore_dirs: Optional[List[str]] = No
 
 
 @click.command(name="DocstringAuditor")
-@click.argument(
-    "path", type=click.Path(exists=True, readable=True), default=__file__
-)
+@click.argument("path", type=click.Path(exists=True, readable=True), default=__file__)
 @click.option(
     "--ignore-dirs",
     type=click.STRING,
     multiple=True,
     default=["tests"],
-    help="A list of directory names to ignore while processing .py files. Separate multiple directories with a space."
+    help="A list of directory names to ignore while processing .py files. Separate multiple directories with a space.",
 )
 def docstring_auditor(path: str, ignore_dirs: List[str]):
     """
@@ -249,7 +247,9 @@ def docstring_auditor(path: str, ignore_dirs: List[str]):
     elif os.path.isdir(path):
         process_directory(path, ignore_dirs)
     else:
-        click.secho("Invalid path. Please provide a valid file or directory path.", fg="red")
+        click.secho(
+            "Invalid path. Please provide a valid file or directory path.", fg="red"
+        )
 
 
 if __name__ == "__main__":
