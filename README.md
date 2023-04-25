@@ -2,22 +2,13 @@
 
 [![tests](https://github.com/rob-luke/docstring-auditor/actions/workflows/test.yml/badge.svg)](https://github.com/rob-luke/docstring-auditor/actions/workflows/test.yml)
 
-Introducing _Docstring Auditor_, a cutting-edge solution to ensure that your Python code documentation remains accurate and up-to-date.
-Tired of encountering misleading or outdated docstrings that no longer align with your code's functionality? You're not alone!
-That's why we've developed Docstring Auditor, a powerful tool that leverages the prowess of large language models
-to analyze and critique your docstrings, ensuring they accurately reflect your code's true purpose.
-Say goodbye to technical discrepancies and confusing descriptions.
-With Docstring Auditor, you can effortlessly bridge the gap between your code and its documentation,
-making it more accessible and understandable to both experts and novices alike.
-Step into the future of code documentation with Docstring Auditor – the ultimate companion for maintaining crystal-clear, precise, and informative docstrings.
+Meet _Docstring Auditor_, your go-to solution for maintaining precise and up-to-date Python code documentation. Tired of misleading or outdated docstrings? Docstring Auditor harnesses the power of large language models to analyze and critique your docstrings, ensuring they align with your code's true purpose. Accessible to both experts and novices, Docstring Auditor is your ultimate companion for clear, concise, and informative docstrings. Say hello to better code documentation!
 
-Recognizing the need for a reliable tool to address the challenge of keeping code documentation in sync with evolving codebases, we developed Docstring Auditor to tackle this issue head-on.
-Our motivation was to create an accessible, user-friendly solution that empowers developers to maintain clear and up-to-date documentation with ease, enhancing their workflow and reducing misunderstandings.
+## Motivation
 
-Docstring Auditor leverages the advanced capabilities of GPT-4, a powerful language model designed to deeply understand both code and natural language.
-By incorporating GPT-4 into our tool, Docstring Auditor examines the docstrings in your Python code, identifying discrepancies between the documentation and the actual code implementation.
-The analysis covers errors, warnings, and potential improvements, providing valuable critiques and suggestions to help you keep your documentation accurate and coherent.
-Docstring Auditor not only ensures that technical details, such as variables and types, are consistent, but it also verifies that the docstrings' meanings are in harmony with the code's functionality.
+Recognizing the need for a reliable tool to address the challenge of keeping code documentation in sync with evolving codebases, we developed Docstring Auditor to tackle this issue head-on. Our motivation was to create an accessible, user-friendly solution that empowers developers to maintain clear and up-to-date documentation with ease, enhancing their workflow and reducing misunderstandings.
+
+Docstring Auditor leverages the advanced capabilities of GPT-4, a powerful language model designed to deeply understand both code and natural language. By incorporating GPT-4 into our tool, Docstring Auditor examines the docstrings in your Python code, identifying discrepancies between the documentation and the actual code implementation. The analysis covers errors, warnings, and potential improvements, providing valuable critiques and suggestions to help you keep your documentation accurate and coherent. Docstring Auditor not only ensures that technical details, such as variables and types, are consistent, but it also verifies that the docstrings' meanings are in harmony with the code's functionality.
 
 With Docstring Auditor, you can trust that your documentation stays relevant, informative, and accessible to all members of your team, making collaboration smoother and more efficient than ever before.
 
