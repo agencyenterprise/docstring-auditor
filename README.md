@@ -31,7 +31,7 @@ The easiest way to use Docstring Auditor is with Docker
 2. Run the following command:
 
 ```bash
-docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code/docstring-auditor:/repo docstring-auditor /repo
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor
 ```
 
 
