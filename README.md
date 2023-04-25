@@ -24,11 +24,26 @@ With Docstring Auditor, you can trust that your documentation stays relevant, in
 
 
 ## Installation
-To install Docstring Auditor, first, ensure you have Python 3.6 or higher installed. Then, install with:
+
+The easiest way to use Docstring Auditor is with Docker
+
+1. Install [Docker](https://docs.docker.com/get-docker/)
+2. Run the following command:
 
 ```bash
-pip install docstring-auditor
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code/docstring-auditor:/repo docstring-auditor /repo
 ```
+
+
+### Local Installation
+You can also run Docstring Auditor locally by following these steps:
+
+1. Install [Python 3.6+](https://www.python.org/downloads/)
+2. Install [Git](https://git-scm.com/downloads)
+3. Clone the repository: `git clone git@github.com:rob-luke/docstring-auditor.git`
+4. Setup hatch: `pip install hatch`
+5. Run the package `hatch run docstring-auditor /path/to/your/python_file.py`
+
 
 ## Usage
 Using Docstring Auditor is as easy as running the following command:
@@ -36,6 +51,8 @@ Using Docstring Auditor is as easy as running the following command:
 ```bash
 docstring-auditor path/to/your/python_file.py
 ```
+
+You can pass in a single file to analyse, or you can pass in a directory and it will analyse every file.
 
 The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
