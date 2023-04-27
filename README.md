@@ -1,10 +1,14 @@
 # Docstring Auditor
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/docstring-auditor)
-[![tests](https://github.com/rob-luke/docstring-auditor/actions/workflows/test.yml/badge.svg)](https://github.com/rob-luke/docstring-auditor/actions/workflows/test.yml)
-[![Release](https://github.com/rob-luke/docstring-auditor/actions/workflows/release.yml/badge.svg)](https://github.com/rob-luke/docstring-auditor/actions/workflows/release.yml)
+[![tests](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/test.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/test.yml)
+[![Release](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml)
 
-Meet _Docstring Auditor_, your go-to solution for maintaining precise and up-to-date Python code documentation. Tired of misleading or outdated docstrings? Docstring Auditor harnesses the power of large language models to analyze and critique your docstrings, ensuring they align with your code's true purpose. Accessible to both experts and novices, Docstring Auditor is your ultimate companion for clear, concise, and informative docstrings. Say hello to better code documentation!
+Meet _Docstring Auditor_, your go-to solution for maintaining precise and up-to-date Python code documentation.
+Tired of misleading or outdated docstrings? Docstring Auditor harnesses the power of large language models to analyze and critique your docstrings,
+ensuring they align with your code's true purpose. Accessible to both experts and novices,
+Docstring Auditor is your ultimate companion for clear, concise, and informative docstrings.
+Say hello to better code documentation!
 
 ## Motivation
 
@@ -131,7 +135,7 @@ You can also run Docstring Auditor locally by following these steps:
 
 1. Install [Python 3.6+](https://www.python.org/downloads/)
 2. Install [Git](https://git-scm.com/downloads)
-3. Clone the repository: `git clone git@github.com:rob-luke/docstring-auditor.git`
+3. Clone the repository: `git clone git@github.com:agencyenterprise/docstring-auditor.git`
 4. Setup hatch: `pip install hatch`
 5. Run the package `hatch run docstring-auditor /path/to/your/python_file.py`
 

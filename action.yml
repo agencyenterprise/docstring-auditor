@@ -4,7 +4,7 @@ author: 'Rob Luke'
 description: 'Use AI to review your code documentation.'
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/rob-luke/docstring-auditor:latest'
+  image: 'docker://ghcr.io/agencyenterprise/docstring-auditor:latest'
 branding:
   icon: 'check-square'
   color: 'white'
