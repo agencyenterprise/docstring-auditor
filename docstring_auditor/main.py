@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import click
 import ast
 import json
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Tuple
 import openai
 
 
@@ -23,7 +24,7 @@ def extract_functions(file_path: str) -> List[Optional[str]]:
 
     Returns
     -------
-    List[str]
+    List[Optional[str]]
         A list of strings, where each string contains the entire code for a
         function, including the definition, docstring, and code.
 
@@ -65,7 +66,7 @@ def ask_for_critique(function: str) -> Dict[str, str]:
 
     Returns
     -------
-    response_dict : dict
+    response_dict : Dict[str, str]
         A dictionary containing the analysis of the docstring, including function name, errors, warnings, and the corrected docstring if needed.
     """
 
@@ -77,6 +78,7 @@ def ask_for_critique(function: str) -> Dict[str, str]:
         "You have extensive knowledge of all coding languages and packages."
         "You will review the documentation for python functions that I provide."
         "The documentation you are helping to write is written for someone with very little coding experience."
+        "Do not provide errors or warnings about imports."
         "Please provide verbose descriptions and ensure no assumptions are made in the documentation."
     )
 
@@ -117,50 +119,60 @@ def ask_for_critique(function: str) -> Dict[str, str]:
     return response_dict
 
 
-def report_concerns(response_dict: Dict[str, str]) -> bool:
+def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
     """
     Inform the user of any concerns with the docstring.
 
     Parameters
     ----------
-    response_dict : dict
+    response_dict : Dict[str, str]
         A dictionary containing the function name, error, warning, and solution.
 
     Returns
     -------
-    bool
-        Returns True if there are any concerns (errors or warnings), otherwise returns False.
+    Tuple[int, int]
+        Returns a tuple containing the count of errors and warnings found in the docstring.
     """
     function_name = response_dict["function"]
     error = response_dict["error"]
     warning = response_dict["warning"]
     solution = response_dict["solution"]
 
+    error_count = 0
+    warning_count = 0
+
     if not error and not warning:
         click.secho(
             f"No concerns found with the docstring for the function: {function_name}\n",
             fg="green",
         )
-        return False
     else:
         if error:
             click.secho(
                 f"An error was found in the function: {function_name}\n", fg="red"
             )
             click.secho(f"{error}\n", fg="red")
+            error_count += 1
         if warning:
             click.secho(
                 f"A warning was found in the function: {function_name}\n", fg="yellow"
             )
             click.secho(f"{warning}\n", fg="yellow")
+            warning_count += 1
         if solution:
             click.secho(f"A proposed solution to these concerns is:\n\n{solution}\n\n")
-        return True
+
+    return error_count, warning_count
 
 
-def process_file(file_path: str):
+def process_file(file_path: str) -> Tuple[int, int]:
     """
     Process a single Python file and analyze its functions' docstrings.
+
+    This function processes the given Python file, extracts the functions within it,
+    and analyzes their docstrings for errors and warnings.
+    It then returns the total number of errors and warnings found in the
+    docstrings of the functions in the given file.
 
     Parameters
     ----------
@@ -169,10 +181,13 @@ def process_file(file_path: str):
 
     Returns
     -------
-    None
-        The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file.
+    Tuple[int, int]
+        A tuple containing the total number of errors and warnings found in the docstrings of the functions in the given file.
     """
     functions = extract_functions(file_path)
+
+    error_count = 0
+    warning_count = 0
 
     for idx, function in enumerate(functions):
         print(
@@ -180,10 +195,16 @@ def process_file(file_path: str):
         )
         assert isinstance(function, str)
         critique = ask_for_critique(function)
-        report_concerns(critique)
+        errors, warnings = report_concerns(critique)
+        error_count += errors
+        warning_count += warnings
+
+    return error_count, warning_count
 
 
-def process_directory(directory_path: str, ignore_dirs: Optional[List[str]] = None):
+def process_directory(
+    directory_path: str, ignore_dirs: Optional[List[str]] = None
+) -> Tuple[int, int]:
     """
     Recursively process all .py files in a directory and its subdirectories, ignoring specified directories.
 
@@ -197,11 +218,14 @@ def process_directory(directory_path: str, ignore_dirs: Optional[List[str]] = No
 
     Returns
     -------
-    None
-        The function does not return any value. It prints the critiques and suggestions for the docstrings in the .py files.
+    Tuple[int, int]
+        A tuple containing the total number of errors and warnings found in the docstrings of the .py files.
     """
     if ignore_dirs is None:
         ignore_dirs = ["tests"]
+
+    error_count = 0
+    warning_count = 0
 
     for root, dirs, files in os.walk(directory_path):
         dirs[:] = [d for d in dirs if d not in ignore_dirs]
@@ -209,7 +233,11 @@ def process_directory(directory_path: str, ignore_dirs: Optional[List[str]] = No
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                process_file(file_path)
+                errors, warnings = process_file(file_path)
+                error_count += errors
+                warning_count += warnings
+
+    return error_count, warning_count
 
 
 @click.command(name="DocstringAuditor")
@@ -221,7 +249,13 @@ def process_directory(directory_path: str, ignore_dirs: Optional[List[str]] = No
     default=["tests"],
     help="A list of directory names to ignore while processing .py files. Separate multiple directories with a space.",
 )
-def docstring_auditor(path: str, ignore_dirs: List[str]):
+@click.option(
+    "--error-on-warnings",
+    is_flag=True,
+    default=False,
+    help="If true, warnings will be treated as errors and included in the exit code count.",
+)
+def docstring_auditor(path: str, ignore_dirs: List[str], error_on_warnings: bool):
     """
     Analyze Python functions' docstrings in a given file or directory and provide critiques and suggestions for improvement.
 
@@ -233,9 +267,10 @@ def docstring_auditor(path: str, ignore_dirs: List[str]):
     ----------
     path : str
         The path to the .py file or directory to analyze the functions' docstrings.
-
     ignore_dirs : List[str]
         A list of directory names to ignore while processing .py files.
+    error_on_warnings : bool
+        If true, warnings will be treated as errors and included in the exit code count.
 
     Returns
     -------
@@ -243,13 +278,23 @@ def docstring_auditor(path: str, ignore_dirs: List[str]):
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
     """
     if os.path.isfile(path):
-        process_file(path)
+        error_count, warning_count = process_file(path)
     elif os.path.isdir(path):
-        process_directory(path, ignore_dirs)
+        error_count, warning_count = process_directory(path, ignore_dirs)
     else:
-        click.secho(
-            "Invalid path. Please provide a valid file or directory path.", fg="red"
+        error_text = "Invalid path. Please provide a valid file or directory path."
+        click.secho(error_text, fg="red")
+        sys.exit(error_text)
+
+    if error_count > 0 or (error_on_warnings and warning_count > 0):
+        error_text = (
+            f"Auditor identified {error_count} errors and {warning_count} warnings."
         )
+        click.secho(error_text, fg="red")
+        sys.exit(error_count + (warning_count if error_on_warnings else 0))
+    else:
+        click.secho("No errors found.", fg="green")
+        sys.exit(0)
 
 
 if __name__ == "__main__":

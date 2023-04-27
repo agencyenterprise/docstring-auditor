@@ -1,0 +1,16 @@
+ignore *.yml
+ignore Dockerfile
+ignore LICENSE
+
+slice dev
+    only docstring_auditor/*.py
+    only tests/*.py
+
+slice main
+    only docstring_auditor/*.py
+
+slice test
+    only tests/*.py
+
+slice docs
+    only README.md
