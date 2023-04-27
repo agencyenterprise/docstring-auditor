@@ -28,7 +28,7 @@ jobs:
         run: DOCKER_BUILDKIT=1 docker build --progress=plain -t ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} .
 
       - name: Tag image
-        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/rob-luke/docstring-auditor:${{ env.RELEASE_VERSION }}
+        run: docker tag ghcr.io/${GITHUB_REPOSITORY}/${GITHUB_REF##*/} ghcr.io/agencyenterprise/docstring-auditor:${{ env.RELEASE_VERSION }}
 
       - name: Push image to github
-        run: docker push ghcr.io/rob-luke/docstring-auditor:${{ env.RELEASE_VERSION }}
+        run: docker push ghcr.io/agencyenterprise/docstring-auditor:${{ env.RELEASE_VERSION }}

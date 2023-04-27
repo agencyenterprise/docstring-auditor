@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "docstring-auditor"
-version = "0.1.6"
-authors = [{name = "Rob Luke", email = "code@robertluke.net"}]
+version = "0.1.7"
+authors = [{name = "Rob Luke", email = "rob.luke@ae.studio"}]
 description = "A tool to analyze Python functions' docstrings and provide critiques and suggestions for improvement"
 readme = "README.md"
 keywords = ["docstring", "auditor", "openai", "gpt"]
-url = "https://github.com/rob-luke/docstring-auditor"
+url = "https://github.com/agencyenterprise/docstring-auditor"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
