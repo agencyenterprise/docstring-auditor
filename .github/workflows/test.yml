@@ -43,3 +43,6 @@ jobs:
 
     - name: Run format checking
       run: hatch run dev:lint-format
+
+    - name: Run self test
+      run: hatch run docstring-auditor

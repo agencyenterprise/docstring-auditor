@@ -171,7 +171,7 @@ def test_ask_for_critique(openai_mock):
         "    return 'successful'\n"
     )
 
-    response_dict = ask_for_critique(function)
+    response_dict = ask_for_critique(function, model="gpt-4")
     assert response_dict["function"].startswith("test_function_")
 
     current_test_id = (
