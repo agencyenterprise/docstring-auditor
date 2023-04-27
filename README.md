@@ -1,8 +1,10 @@
 # Docstring Auditor
 
+[![PyPI version](https://badge.fury.io/py/docstring-auditor.svg)](https://badge.fury.io/py/docstring-auditor)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/docstring-auditor)
 [![tests](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/test.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/test.yml)
-[![Release](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml)
+[![release](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml)
+
 
 Meet _Docstring Auditor_, your go-to solution for maintaining precise and up-to-date Python code documentation.
 Tired of misleading or outdated docstrings? Docstring Auditor harnesses the power of large language models to analyze and critique your docstrings,
