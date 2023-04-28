@@ -22,10 +22,10 @@ runs:
       with:
         fetch-depth: 0
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "3.11"
 
     - name: Install Hatch
       shell: bash
@@ -43,4 +43,4 @@ runs:
 
     - name: Execute
       shell: bash
-      run: hatch run docstring-auditor ${{ input.path }}
+      run: hatch run docstring-auditor ${{ inputs.path }}
