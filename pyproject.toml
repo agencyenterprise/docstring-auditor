@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "docstring-auditor"
-version = "0.1.9"
+version = "0.1.10"
 authors = [{name = "Rob Luke", email = "rob.luke@ae.studio"}]
 description = "A tool to analyze Python functions' docstrings and provide critiques and suggestions for improvement"
 readme = "README.md"
