@@ -2,25 +2,22 @@
 name: 'Docstring Auditor'
 author: 'Rob Luke'
 description: 'Use AI to review your code documentation.'
-runs:
-  using: 'docker'
-  image: 'docker://ghcr.io/agencyenterprise/docstring-auditor:latest'
 branding:
-  icon: 'check-square'
-  color: 'white'
+  icon: 'code'
+  color: 'blue'
 
 inputs:
-  analysis-path:
-    description: 'Path to the file or directory you wish to analyse'
-    required: false
-    default: '/repo'
-  openai-api-key:
-    description: 'Your OpenAI API key'
+  openaiApiKey:
+    description: "OpenAI API Key"
     required: true
-    default: 'sk-XXXX'
+
+  path:
+    description: "Path to the file or directory to run the action on"
+    required: true
 
 runs:
-  using: "composite"
-  steps:
-    - run: echo I will process ${{ inputs.analysis-path }}.
-      shell: bash
+  using: "docker"
+  image: "docker://ghcr.io/agencyenterprise/docstring-auditor:latest"
+  args:
+    - ${{ inputs.path }}
+    - ${{ inputs.openaiApiKey }}
