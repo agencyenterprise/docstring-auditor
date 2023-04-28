@@ -8,8 +8,6 @@ import json
 from typing import List, Optional, Dict, Tuple
 import openai
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 
 def extract_functions(file_path: str) -> List[Optional[str]]:
     """
