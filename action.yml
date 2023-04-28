@@ -17,14 +17,6 @@ inputs:
 
 runs:
   using: "composite"
-  name: Workplace Action
-
-  runs-on: ${{ matrix.os }}
-  strategy:
-    fail-fast: false
-    matrix:
-      os: [ubuntu-latest]
-      python-version: ['3.11']
   env:
     OPENAI_API_KEY: ${{ input.openaiApiKey }}
 
