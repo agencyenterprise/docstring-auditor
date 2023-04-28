@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ['3.10']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
@@ -47,4 +47,5 @@ jobs:
       run: hatch run dev:lint-format
 
     - name: Run self test
+      if : ${{ matrix.python-version == '3.11' }}
       run: hatch run docstring-auditor
