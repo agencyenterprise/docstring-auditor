@@ -26,7 +26,7 @@ jobs:
           ls
 
       - name: Docstring Auditor
-        uses: agencyenterprise/docstring-auditor@latest
+        uses: agencyenterprise/docstring-auditor@main
         with:
           openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
           path: docstring_auditor
