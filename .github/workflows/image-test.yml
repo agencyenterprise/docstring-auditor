@@ -31,4 +31,4 @@ jobs:
     - name: Test Docker image
       run: |
         echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
-        docker run --rm -i --env-file .env my-docker-image:test docstring_auditor/main.py
+        docker run --rm -i --env-file .env -v ./:/repo my-docker-image:test docstring_auditor/main.py

@@ -38,7 +38,15 @@ The easiest way to use Docstring Auditor is with Docker
 2. Run the following command:
 
 ```bash
+# If your code lives in the directory /Path/to/code
+# And you wish to analyse all files in that directory
 docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor
+```
+
+```bash
+# If your code lives in the directory /Path/to/code
+# And you wish to analyse a file called module/file.py
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor module/file.py
 ```
 
 ## Usage
