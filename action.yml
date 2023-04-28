@@ -28,15 +28,19 @@ runs:
         python-version: ${{ matrix.python-version }}
 
     - name: Install Hatch
+      shell: bash
       run: pip install --upgrade hatch
 
     - name: pwd
+      shell: bash
       run: |
         pwd
 
     - name: ls
+      shell: bash
       run: |
         ls
 
     - name: Execute
+      shell: bash
       run: hatch run docstring-auditor ${{ input.path }}
