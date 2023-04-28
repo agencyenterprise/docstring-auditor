@@ -19,19 +19,15 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-  - name: Build Docker image
-    uses: docker/build-push-action@v2
-    with:
-      context: .
-      file: ./Dockerfile
-      push: false
-      tags: my-docker-image:test
+    - name: Build Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: false
+        tags: my-docker-image:test
 
-    - name: Whats here
+    - name: Test Docker image
       run: |
-        ls
-
-  - name: Test Docker image
-    run: |
-      echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
-      docker run --rm -i --env-file .env my-docker-image:test docstring_auditor/main.py
+        echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" > .env
+        docker run --rm -i --env-file .env my-docker-image:test docstring_auditor/main.py
