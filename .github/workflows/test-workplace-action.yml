@@ -1,4 +1,4 @@
-name: tests
+name: workspace
 
 on:
   push:
@@ -17,16 +17,16 @@ jobs:
         with:
           fetch-depth: 0
 
-    - name: pwd
-      run: |
-        pwd
+      - name: pwd
+        run: |
+          pwd
 
-    - name: ls
-      run: |
-        pwd
+      - name: ls
+        run: |
+          pwd
 
-      - name: Docstring Auditor
-        uses: agencyenterprise/docstring-auditor@v0.1.11
-        with:
-          openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
-          path: docstring_auditor
+        - name: Docstring Auditor
+          uses: agencyenterprise/docstring-auditor@v0.1.11
+          with:
+            openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
+            path: docstring_auditor
