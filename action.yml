@@ -18,7 +18,7 @@ inputs:
 runs:
   using: "composite"
   env:
-    OPENAI_API_KEY: ${{ input.openaiApiKey }}
+    OPENAI_API_KEY: ${{ inputs.openaiApiKey }}
 
   steps:
     - uses: actions/checkout@v3
