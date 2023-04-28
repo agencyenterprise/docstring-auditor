@@ -44,3 +44,5 @@ runs:
     - name: Execute
       shell: bash
       run: hatch run docstring-auditor ${{ inputs.path }}
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
