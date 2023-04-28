@@ -55,7 +55,7 @@ If you wish for it to analyse a single file, pass in the file name with the repo
 For example, to analyse the file in  `src/module/file.py`...
 
 ```bash
-docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor /repo/src/module/file.py
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor src/module/file.py
 ```
 The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
