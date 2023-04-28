@@ -23,10 +23,10 @@ jobs:
 
       - name: ls
         run: |
-          pwd
+          ls
 
-        - name: Docstring Auditor
-          uses: agencyenterprise/docstring-auditor@v0.1.11
-          with:
-            openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
-            path: docstring_auditor
+      - name: Docstring Auditor
+        uses: agencyenterprise/docstring-auditor@v0.1.11
+        with:
+          openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
+          path: docstring_auditor
