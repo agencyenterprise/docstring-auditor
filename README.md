@@ -4,6 +4,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/docstring-auditor)
 [![tests](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/test.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/test.yml)
 [![release](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml/badge.svg)](https://github.com/agencyenterprise/docstring-auditor/actions/workflows/release.yml)
+[![release](https://img.shields.io/badge/docker-success-green)](https://github.com/agencyenterprise/docstring-auditor/pkgs/container/docstring-auditor)
 
 
 Meet _Docstring Auditor_, your go-to solution for maintaining precise and up-to-date Python code documentation.
