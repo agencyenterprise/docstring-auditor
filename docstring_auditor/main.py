@@ -9,31 +9,31 @@ from typing import List, Optional, Dict, Tuple
 import openai
 
 
-def extract_functions(file_path: str) -> List[Optional[str]]:
+def extract_code_block(file_path: str) -> List[Optional[str]]:
     """
-    Extract functions from a Python file.
+    Extract functions and methods from a Python file.
 
-    This function reads a .py file and extracts each of the functions from the
+    This function reads a .py file and extracts each of the functions and methods from the
     file. It returns a list of strings, where each string contains the entire
-    code for a function, including the definition, docstring, and code.
+    code for a function or method, including the definition, docstring, and code.
 
     Parameters
     ----------
     file_path : str
-        The path to the .py file to extract functions from.
+        The path to the .py file to extract functions and methods from.
 
     Returns
     -------
     List[Optional[str]]
         A list of strings, where each string contains the entire code for a
-        function, including the definition, docstring, and code.
+        function or method, including the definition, docstring, and code.
 
     Examples
     --------
     >>> file_path = 'path/to/your/python_file.py'
-    >>> functions = extract_functions(file_path)
-    >>> for function in functions:
-    ...     print(function)
+    >>> functions_and_methods = extract_code_block(file_path)
+    >>> for function_or_method in functions_and_methods:
+    ...     print(function_or_method)
     ...     print('-' * 80)
 
     Notes
@@ -45,13 +45,17 @@ def extract_functions(file_path: str) -> List[Optional[str]]:
         content = file.read()
 
     tree = ast.parse(content)
-    functions = [
+    functions_and_methods = [
         ast.get_source_segment(content, func)
         for func in tree.body
-        if isinstance(func, ast.FunctionDef)
+        if isinstance(func, (ast.FunctionDef, ast.ClassDef))
     ]
 
-    return functions
+    for cls in [node for node in tree.body if isinstance(node, ast.ClassDef)]:
+        for method in [node for node in cls.body if isinstance(node, ast.FunctionDef)]:
+            functions_and_methods.append(ast.get_source_segment(content, method))
+
+    return functions_and_methods
 
 
 def ask_for_critique(function: str, model: str) -> Dict[str, str]:
@@ -169,36 +173,36 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
 
 def process_file(file_path: str, model: str) -> Tuple[int, int]:
     """
-    Process a single Python file and analyze its functions' docstrings.
+    Process a single Python file and analyze its functions' and methods' docstrings.
 
-    This function processes the given Python file, extracts the functions within it,
+    This function processes the given Python file, extracts the functions and methods within it,
     and analyzes their docstrings for errors and warnings.
     It then returns the total number of errors and warnings found in the
-    docstrings of the functions in the given file.
+    docstrings of the functions and methods in the given file.
 
     Parameters
     ----------
     file_path : str
-        The path to the .py file to analyze the functions' docstrings.
+        The path to the .py file to analyze the functions' and methods' docstrings.
     model : str
         The name of the OpenAI model to use for the analysis.
 
     Returns
     -------
     Tuple[int, int]
-        A tuple containing the total number of errors and warnings found in the docstrings of the functions in the given file.
+        A tuple containing the total number of errors and warnings found in the docstrings of the functions and methods in the given file.
     """
-    functions = extract_functions(file_path)
+    functions_and_methods = extract_code_block(file_path)
 
     error_count = 0
     warning_count = 0
 
-    for idx, function in enumerate(functions):
+    for idx, function_or_method in enumerate(functions_and_methods):
         print(
-            f"Processing function {idx + 1} of {len(functions)} in file {file_path}..."
+            f"Processing function or method {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
         )
-        assert isinstance(function, str)
-        critique = ask_for_critique(function, model)
+        assert isinstance(function_or_method, str)
+        critique = ask_for_critique(function_or_method, model)
         errors, warnings = report_concerns(critique)
         error_count += errors
         warning_count += warnings
@@ -266,7 +270,9 @@ def process_directory(
     default="gpt-4",
     help="The OpenAI model to use for docstring analysis. Default is 'gpt-4'.",
 )
-def docstring_auditor(path: str, ignore_dirs: List[str], error_on_warnings: bool, model: str):
+def docstring_auditor(
+    path: str, ignore_dirs: List[str], error_on_warnings: bool, model: str
+):
     """
     Analyze Python functions' docstrings in a given file or directory and provide critiques and suggestions for improvement.
 
