@@ -22,10 +22,10 @@ Docstring Auditor leverages the advanced capabilities of GPT-4, a powerful langu
 With Docstring Auditor, you can trust that your documentation stays relevant, informative, and accessible to all members of your team, making collaboration smoother and more efficient than ever before.
 
 _Docstring Auditor_ can be utilized as a
-GitHub Action,
-a Docker container,
-command-line tool,
-or Python package.
+[GitHub Action](#github-action),
+a [Docker container](#docker)
+[command-line tool](#local-installation),
+or [Python package](#local-installation).
 
 
 ## Features
@@ -35,51 +35,6 @@ or Python package.
 - Powered by OpenAI's GPT for accurate and insightful analysis
 - Easy to use command-line interface
 
-
-## GitHub Action
-
-Docstring Auditor can be used as a GitHub Action to automatically analyze the docstrings in your Python codebase.
-To use Docstring Auditor as a GitHub Action, add the following to your workflow file:
-
-```yaml
-  - name: Docstring Auditor
-    uses: agencyenterprise/docstring-auditor@main
-    with:
-      openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
-      path: .
-```
-
-For an example of how to use Docstring Auditor, [see this workflow](https://github.com/agencyenterprise/docstring-auditor/blob/main/.github/workflows/test-workplace-action.yml).
-
-
-## Docker
-
-Docstring Auditor can be used with Docker
-
-1. Install [Docker](https://docs.docker.com/get-docker/)
-2. Run the following command:
-
-```bash
-# If your code lives in the directory /Path/to/code
-# And you wish to analyse all files in that directory
-docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor
-```
-
-```bash
-# If your code lives in the directory /Path/to/code
-# And you wish to analyse a file called module/file.py
-docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor module/file.py
-```
-
-### Usage
-If you use the docker command above, Docstring Auditor will analyse all python files in your directory.
-If you wish for it to analyse a single file, pass in the file name with the repo prefix.
-For example, to analyse the file in  `src/module/file.py`...
-
-```bash
-docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor src/module/file.py
-```
-The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
 
 ## Example of Docstring Auditor in Action
@@ -148,14 +103,59 @@ Returns
 int or float
     The result of the addition or subtraction operation.
 """
-
 ```
+
+
+## GitHub Action
+
+Docstring Auditor can be used as a GitHub Action to automatically analyze the docstrings in your Python codebase.
+To use Docstring Auditor as a GitHub Action, add the following to your workflow file:
+
+```yaml
+  - name: Docstring Auditor
+    uses: agencyenterprise/docstring-auditor@main
+    with:
+      openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
+      path: .
+```
+
+For an example of how to use Docstring Auditor, [see this workflow](https://github.com/agencyenterprise/docstring-auditor/blob/main/.github/workflows/test-workplace-action.yml).
+
+
+## Docker
+
+Docstring Auditor can be used with Docker
+
+1. Install [Docker](https://docs.docker.com/get-docker/)
+2. Run the following command:
+
+```bash
+# If your code lives in the directory /Path/to/code
+# And you wish to analyse all files in that directory
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor
+```
+
+```bash
+# If your code lives in the directory /Path/to/code
+# And you wish to analyse a file called module/file.py
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor module/file.py
+```
+
+### Usage
+If you use the docker command above, Docstring Auditor will analyse all python files in your directory.
+If you wish for it to analyse a single file, pass in the file name with the repo prefix.
+For example, to analyse the file in  `src/module/file.py`...
+
+```bash
+docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor src/module/file.py
+```
+The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
+
 
 ## Limitations
 
-1. There is currently no checking for malformed json from GPT4. Occasionaly GPT4 will return a bad json and the program will crash.
+1. There is currently no checking for malformed json from GPT4. Occasionaly, GPT4 will return a bad json and the program will crash.
 2. There is no rate limiting on the GPT4 calls.
-3. Only GPT4 is included. It would be trivial to make this a variable. Pull requests are welcome.
 
 
 ## Contributing

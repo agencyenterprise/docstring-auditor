@@ -18,7 +18,7 @@ inputs:
   model:
     description: "OpenAI model to use"
     required: false
-    default: "gpt-3.5-turbo"
+    default: "gpt-4"
 
 runs:
   using: "composite"
