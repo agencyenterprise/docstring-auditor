@@ -1,4 +1,4 @@
-name: workspace
+name: suggester
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   docker:
-    name: Release
+    name: execute
     runs-on: ubuntu-latest
     steps:
 

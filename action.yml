@@ -52,7 +52,15 @@ runs:
       run: pip install --upgrade hatch
 
     - name: Execute
+      if: ${{ inputs.auto-fix }}
       shell: bash
-      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }}  --ignore-dirs ${{ inputs.ignore-dirs }}  --auto-fix ${{ inputs.auto-fix }} ${{ inputs.path }}
+      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }}  --ignore-dirs ${{ inputs.ignore-dirs }}  --auto-fix ${{ inputs.path }}
+      env:
+        OPENAI_API_KEY: ${{ inputs.openaiApiKey }}
+
+    - name: Execute
+      if: ${{ inputs.auto-fix == false}}
+      shell: bash
+      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }}  --ignore-dirs ${{ inputs.ignore-dirs }} ${{ inputs.path }}
       env:
         OPENAI_API_KEY: ${{ inputs.openaiApiKey }}
