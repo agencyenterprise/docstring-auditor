@@ -30,6 +30,11 @@ inputs:
     required: false
     default: "tests"
 
+  auto-fix:
+    description: "Automatically fix issues"
+    required: false
+    default: false
+
 runs:
   using: "composite"
   steps:
@@ -46,18 +51,8 @@ runs:
       shell: bash
       run: pip install --upgrade hatch
 
-    - name: pwd
-      shell: bash
-      run: |
-        pwd
-
-    - name: ls
-      shell: bash
-      run: |
-        ls
-
     - name: Execute
       shell: bash
-      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }}  --ignore-dirs ${{ inputs.ignore-dirs }} ${{ inputs.path }}
+      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }}  --ignore-dirs ${{ inputs.ignore-dirs }}  --auto-fix ${{ inputs.auto-fix }} ${{ inputs.path }}
       env:
         OPENAI_API_KEY: ${{ inputs.openaiApiKey }}
