@@ -43,6 +43,17 @@ jobs:
       - name: git diff
         run: |
           git diff
+          
+      - uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: reviewdog
+        run: |
+          TMPFILE=$(mktemp)
+          git diff >"${TMPFILE}"
+          git stash -u && git stash drop
+          reviewdog -f=diff -f.diff.strip=1 -reporter=github-pr-review < "${TMPFILE}"
 
       - name: suggester
         uses: reviewdog/action-suggester@v1
