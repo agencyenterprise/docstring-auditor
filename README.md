@@ -130,6 +130,7 @@ To use Docstring Auditor as a GitHub Action, add the following to your workflow 
       code-block-name: docstring_auditor
       model: gpt-4
       ignore-dirs: tests
+      auto-fix: false
 ```
 
 For an example of how to use Docstring Auditor, [see this workflow](https://github.com/agencyenterprise/docstring-auditor/blob/main/.github/workflows/test-workplace-action.yml).
