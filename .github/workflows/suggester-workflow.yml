@@ -1,0 +1,38 @@
+name: workspace
+
+on:
+  pull_request:
+    branches: [main]
+
+
+jobs:
+  docker:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: pwd
+        run: |
+          pwd
+
+      - name: ls
+        run: |
+          ls
+
+      - name: Docstring Auditor
+        uses: agencyenterprise/docstring-auditor@main
+        with:
+          openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
+          path: .
+          code-block-name: docstring_auditor
+          ignore-dirs: tests
+          auto-fix: true
+
+      - name: suggester
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: docstring-auditor
