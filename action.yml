@@ -25,6 +25,11 @@ inputs:
     required: false
     default: ""
 
+  ignore-dirs:
+    description: "Directories to ignore"
+    required: false
+    default: "tests"
+
 runs:
   using: "composite"
   steps:
@@ -53,6 +58,6 @@ runs:
 
     - name: Execute
       shell: bash
-      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }} ${{ inputs.path }}
+      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }}  --ignore-dirs ${{ inputs.ignore-dirs }} ${{ inputs.path }}
       env:
         OPENAI_API_KEY: ${{ inputs.openaiApiKey }}
