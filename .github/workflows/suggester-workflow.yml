@@ -32,6 +32,18 @@ jobs:
           ignore-dirs: tests
           auto-fix: true
 
+      - name: ls
+        run: |
+          ls
+
+      - name: git status
+        run: |
+          git status
+
+      - name: git diff
+        run: |
+          git diff
+
       - name: suggester
         uses: reviewdog/action-suggester@v1
         with:
