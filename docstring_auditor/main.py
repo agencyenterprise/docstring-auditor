@@ -232,7 +232,7 @@ def process_file(
         The name of the OpenAI model to use for the analysis.
     auto_fix : bool
         Whether to automatically fix the errors and warnings found in the docstrings.
-    code_block_name : str
+    code_block_name : str, optional, default: ""
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
 
