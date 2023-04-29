@@ -26,8 +26,8 @@ def extract_code_block(
     file_path : str
         The path to the .py file to extract functions, methods, and classes from.
     code_block_name : str
-        The name of a single block of code that you want audited, rather than all the code blocks.
-        If you want all the code blocks audited, leave this blank.
+        The name of a single block of code that you want extracted, rather than all the code blocks.
+        If you want all the code blocks extracted, leave this blank.
 
     Returns
     -------
@@ -55,21 +55,25 @@ def extract_code_block(
 
 def ask_for_critique(function: str, model: str) -> Dict[str, str]:
     """
-    Query OpenAI for a critique of the docstring for a function.
+    Extract functions, methods, and classes from a Python file.
+
+    This function reads a .py file and extracts each of the functions, methods, and classes from the
+    file. It returns a list of strings, where each string contains the entire
+    code for a function, method, or class, including the definition, docstring, and code.
 
     Parameters
     ----------
-    function : str
-        A string containing the code and the docstring for the Python function.
-        The input should be formatted as a single string, with the code and docstring combined.
-    model : str
-        The name of the OpenAI model to use for the query.
+    file_path : str
+        The path to the .py file to extract functions, methods, and classes from.
+    code_block_name : str
+        The name of a single block of code that you want extracted, rather than all the code blocks.
+        If you want all the code blocks extracted, leave this blank.
 
     Returns
     -------
-    response_dict : Dict[str, str]
-        A dictionary containing the analysis of the docstring, including function name, errors, warnings, and the corrected docstring if needed.
-    """
+    List[Optional[str]]
+        A list of strings, where each string contains the entire code for a
+        function, method, or class, including the definition, docstring, and code."""
 
     DESIRED_DOCSTRING_STYLE = "numpydoc"
 
@@ -122,18 +126,25 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
 
 def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
     """
-    Inform the user of any concerns with the docstring.
+    Extract functions, methods, and classes from a Python file.
+
+    This function reads a .py file and extracts each of the functions, methods, and classes from the
+    file. It returns a list of strings, where each string contains the entire
+    code for a function, method, or class, including the definition, docstring, and code.
 
     Parameters
     ----------
-    response_dict : Dict[str, str]
-        A dictionary containing the function name, error, warning, and solution.
+    file_path : str
+        The path to the .py file to extract functions, methods, and classes from.
+    code_block_name : str
+        The name of a single block of code that you want extracted, rather than all the code blocks.
+        If you want all the code blocks extracted, leave this blank.
 
     Returns
     -------
-    Tuple[int, int]
-        Returns a tuple containing the count of errors and warnings found in the docstring.
-    """
+    List[Optional[str]]
+        A list of strings, where each string contains the entire code for a
+        function, method, or class, including the definition, docstring, and code."""
     function_name = response_dict["function"]
     error = response_dict["error"]
     warning = response_dict["warning"]
@@ -181,6 +192,17 @@ def apply_solution(file_path: str, old_function: str, new_function: str):
     new_function : str
         The source code of the function with the new triple-quoted docstring.
 
+    Notes
+    -----
+    This function uses the 're' module for regular expressions and the 'click' module for command line interface.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the file specified by file_path does not exist.
+    re.error
+        If there is an error in the regular expression pattern.
+
     """
     with open(file_path, "r") as file:
         content = file.read()
@@ -225,8 +247,10 @@ def process_file(
 
     Returns
     -------
-    Tuple[int, int]
-        A tuple containing the total number of errors and warnings found in the docstrings of the functions and methods in the given file.
+    error_count : int
+        The total number of errors found in the docstrings of the functions and methods in the given file.
+    warning_count : int
+        The total number of warnings found in the docstrings of the functions and methods in the given file.
     """
     functions_and_methods = extract_code_block(file_path, code_block_name)
 
@@ -264,26 +288,31 @@ def process_directory(
     code_block_name: str = "",
 ) -> Tuple[int, int]:
     """
-    Recursively process all .py files in a directory and its subdirectories, ignoring specified directories.
+    Process a single Python file and analyze its functions' and methods' docstrings.
+
+    This function processes the given Python file, extracts the functions and methods within it,
+    and analyzes their docstrings for errors and warnings.
+    It then returns the total number of errors and warnings found in the
+    docstrings of the functions and methods in the given file.
 
     Parameters
     ----------
-    directory_path : str
-        The path to the directory containing .py files to analyze the functions' docstrings.
+    file_path : str
+        The path to the .py file to analyze the functions' and methods' docstrings.
     model : str
-        The name of the OpenAI model to use for the docstring analysis.
+        The name of the OpenAI model to use for the analysis.
     auto_fix : bool
-        Whether to automatically fix the docstring errors and warnings.
-    ignore_dirs : Optional[List[str]]
-        A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
+        Whether to automatically fix the errors and warnings found in the docstrings.
     code_block_name : str
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
 
     Returns
     -------
-    Tuple[int, int]
-        A tuple containing the total number of errors and warnings found in the docstrings of the .py files.
+    error_count : int
+        The total number of errors found in the docstrings of the functions and methods in the given file.
+    warning_count : int
+        The total number of warnings found in the docstrings of the functions and methods in the given file.
     """
     if ignore_dirs is None:
         ignore_dirs = ["tests"]
