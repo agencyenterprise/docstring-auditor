@@ -132,7 +132,7 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
     return response_dict
 
 
-def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
+def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
     """
     Inform the user of any concerns with the docstring.
 
@@ -175,11 +175,19 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
         if solution:
             click.secho(f"A proposed solution to these concerns is:\n\n{solution}\n\n")
 
-    return error_count, warning_count
+    return error_count, warning_count, solution
 
+def apply_solution(file_path: str, old_function: str, new_function: str):
+    with open(file_path, "r") as file:
+        content = file.read()
+
+    content = content.replace(old_function, new_function)
+
+    with open(file_path, "w") as file:
+        file.write(content)
 
 def process_file(
-    file_path: str, model: str, code_block_name: str = ""
+    file_path: str, model: str, auto_fix: bool, code_block_name: str = ""
 ) -> Tuple[int, int]:
     """
     Process a single Python file and analyze its functions' and methods' docstrings.
@@ -215,9 +223,12 @@ def process_file(
         )
         assert isinstance(function_or_method, str)
         critique = ask_for_critique(function_or_method, model)
-        errors, warnings = report_concerns(critique)
+        errors, warnings, solution = report_concerns(critique)
         error_count += errors
         warning_count += warnings
+
+        if auto_fix and solution:
+            apply_solution(file_path, function_or_method, solution)
 
     return error_count, warning_count
 
@@ -225,6 +236,7 @@ def process_file(
 def process_directory(
     directory_path: str,
     model: str,
+    auto_fix: bool,
     ignore_dirs: Optional[List[str]] = None,
     code_block_name: str = "",
 ) -> Tuple[int, int]:
@@ -294,12 +306,19 @@ def process_directory(
     default="",
     help="The name of a single block of code that you want audited, rather than all the code blocks.",
 )
+@click.option(
+    "--auto-fix",
+    is_flag=True,
+    default=False,
+    help="If true, the program will incorporate the suggested changes into the original file, overwriting the existing docstring.",
+)
 def docstring_auditor(
     path: str,
     ignore_dirs: List[str],
     error_on_warnings: bool,
     model: str,
     code_block_name: str,
+    auto_fix: bool,
 ):
     """
     Analyze Python functions' docstrings in a given file or directory and provide critiques and suggestions for improvement.
@@ -328,10 +347,10 @@ def docstring_auditor(
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
     """
     if os.path.isfile(path):
-        error_count, warning_count = process_file(path, model, code_block_name)
+        error_count, warning_count = process_file(path, model, auto_fix, code_block_name)
     elif os.path.isdir(path):
         error_count, warning_count = process_directory(
-            path, model, ignore_dirs, code_block_name
+            path, model, auto_fix, ignore_dirs, code_block_name
         )
     else:
         error_text = "Invalid path. Please provide a valid file or directory path."
