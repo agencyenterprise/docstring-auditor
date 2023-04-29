@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 import click
 import ast
 import json
@@ -179,29 +180,34 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
 
 
 def apply_solution(file_path: str, old_function: str, new_function: str):
-    """
-    Replace the old function with the new function in the given file.
+    """Update the docstring of a function in a file.
+
+    This function reads the content of a file, extracts the docstrings of the old_function and new_function,
+    replaces the old docstring with the new docstring, and writes the updated content back to the file.
 
     Parameters
     ----------
     file_path : str
-        The path to the .py file to analyze the functions' and methods' docstrings.
+        The path to the file containing the function whose docstring needs to be updated.
     old_function : str
-        The old function to replace.
+        The source code of the function with the old triple-quoted docstring.
     new_function : str
-        The new function to replace the old function with.
+        The source code of the function with the new triple-quoted docstring.
 
-    Returns
-    -------
-    None
     """
     with open(file_path, "r") as file:
         content = file.read()
 
-    content = content.replace(old_function, new_function)
+    # Extract the old and new docstrings
+    old_docstring = re.search(r'""".*?"""', old_function, flags=re.DOTALL).group(0)
+    new_docstring = re.search(r'""".*?"""', new_function, flags=re.DOTALL).group(0)
 
+    # Replace the old docstring with the new docstring
+    updated_content = content.replace(old_docstring, new_docstring)
+
+    click.secho(f"Editing file: {file_path}", fg="red")
     with open(file_path, "w") as file:
-        file.write(content)
+        file.write(updated_content)
 
 
 def process_file(
@@ -239,7 +245,7 @@ def process_file(
 
     for idx, function_or_method in enumerate(functions_and_methods):
         print(
-            f"Processing function or method {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
+            f"Processing code {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
         )
         assert isinstance(function_or_method, str)
         critique = ask_for_critique(function_or_method, model)
