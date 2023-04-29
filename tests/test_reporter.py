@@ -18,7 +18,7 @@ def test_report_concerns_no_errors_no_warnings(monkeypatch):
         "solution": "",
     }
     result = report_concerns(response_dict)
-    assert result == (0, 0)
+    assert result == (0, 0, "")
     assert len(captured_output) == 1
     assert "No concerns found" in captured_output[0]
 
@@ -38,7 +38,7 @@ def test_report_concerns_error_only(monkeypatch):
         "solution": "Updated docstring.",
     }
     result = report_concerns(response_dict)
-    assert result == (1, 0)
+    assert result == (1, 0, "Updated docstring.")
     assert len(captured_output) == 3
     assert "An error was found" in captured_output[0]
     assert "An error occurred." in captured_output[1]
@@ -60,7 +60,7 @@ def test_report_concerns_warning_only(monkeypatch):
         "solution": "",
     }
     result = report_concerns(response_dict)
-    assert result == (0, 1)
+    assert result == (0, 1, "")
     assert len(captured_output) == 2
     assert "A warning was found" in captured_output[0]
     assert "A warning occurred." in captured_output[1]
@@ -82,7 +82,7 @@ def test_report_concerns_error_and_warning(monkeypatch):
     }
     result = report_concerns(response_dict)
     print(captured_output)
-    assert result == (1, 1)
+    assert result == (1, 1, "Updated docstring.")
     assert len(captured_output) == 5
     assert "An error was found" in captured_output[0]
     assert "An error occurred." in captured_output[1]

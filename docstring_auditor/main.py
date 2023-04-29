@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 import click
 import ast
 import json
@@ -132,7 +133,7 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
     return response_dict
 
 
-def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
+def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
     """
     Inform the user of any concerns with the docstring.
 
@@ -175,11 +176,42 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
         if solution:
             click.secho(f"A proposed solution to these concerns is:\n\n{solution}\n\n")
 
-    return error_count, warning_count
+    return error_count, warning_count, solution
+
+
+def apply_solution(file_path: str, old_function: str, new_function: str):
+    """Update the docstring of a function in a file.
+
+    This function reads the content of a file, extracts the docstrings of the old_function and new_function,
+    replaces the old docstring with the new docstring, and writes the updated content back to the file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the file containing the function whose docstring needs to be updated.
+    old_function : str
+        The source code of the function with the old triple-quoted docstring.
+    new_function : str
+        The source code of the function with the new triple-quoted docstring.
+
+    """
+    with open(file_path, "r") as file:
+        content = file.read()
+
+    # Extract the old and new docstrings
+    old_docstring = re.search(r'""".*?"""', old_function, flags=re.DOTALL).group(0)  # type: ignore
+    new_docstring = re.search(r'""".*?"""', new_function, flags=re.DOTALL).group(0)  # type: ignore
+
+    # Replace the old docstring with the new docstring
+    updated_content = content.replace(old_docstring, new_docstring)
+
+    click.secho(f"Editing file: {file_path}", fg="red")
+    with open(file_path, "w") as file:
+        file.write(updated_content)
 
 
 def process_file(
-    file_path: str, model: str, code_block_name: str = ""
+    file_path: str, model: str, auto_fix: bool, code_block_name: str = ""
 ) -> Tuple[int, int]:
     """
     Process a single Python file and analyze its functions' and methods' docstrings.
@@ -195,6 +227,8 @@ def process_file(
         The path to the .py file to analyze the functions' and methods' docstrings.
     model : str
         The name of the OpenAI model to use for the analysis.
+    auto_fix : bool
+        Whether to automatically fix the errors and warnings found in the docstrings.
     code_block_name : str
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
@@ -211,13 +245,16 @@ def process_file(
 
     for idx, function_or_method in enumerate(functions_and_methods):
         print(
-            f"Processing function or method {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
+            f"Processing code {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
         )
         assert isinstance(function_or_method, str)
         critique = ask_for_critique(function_or_method, model)
-        errors, warnings = report_concerns(critique)
+        errors, warnings, solution = report_concerns(critique)
         error_count += errors
         warning_count += warnings
+
+        if auto_fix and solution:
+            apply_solution(file_path, function_or_method, solution)
 
     return error_count, warning_count
 
@@ -225,6 +262,7 @@ def process_file(
 def process_directory(
     directory_path: str,
     model: str,
+    auto_fix: bool,
     ignore_dirs: Optional[List[str]] = None,
     code_block_name: str = "",
 ) -> Tuple[int, int]:
@@ -237,6 +275,8 @@ def process_directory(
         The path to the directory containing .py files to analyze the functions' docstrings.
     model : str
         The name of the OpenAI model to use for the docstring analysis.
+    auto_fix : bool
+        Whether to automatically fix the docstring errors and warnings.
     ignore_dirs : Optional[List[str]]
         A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
     code_block_name : str
@@ -260,7 +300,9 @@ def process_directory(
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                errors, warnings = process_file(file_path, model, code_block_name)
+                errors, warnings = process_file(
+                    file_path, model, auto_fix, code_block_name
+                )
                 error_count += errors
                 warning_count += warnings
 
@@ -294,12 +336,19 @@ def process_directory(
     default="",
     help="The name of a single block of code that you want audited, rather than all the code blocks.",
 )
+@click.option(
+    "--auto-fix",
+    is_flag=True,
+    default=False,
+    help="If true, the program will incorporate the suggested changes into the original file, overwriting the existing docstring.",
+)
 def docstring_auditor(
     path: str,
     ignore_dirs: List[str],
     error_on_warnings: bool,
     model: str,
     code_block_name: str,
+    auto_fix: bool,
 ):
     """
     Analyze Python functions' docstrings in a given file or directory and provide critiques and suggestions for improvement.
@@ -321,6 +370,8 @@ def docstring_auditor(
     code_block_name : str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank. Default is an empty string.
+    auto_fix : bool, optional
+        If true, the program will incorporate the suggested changes into the original file, overwriting the existing docstring. Default is False. Suggestions are only applied if they are associated with an error, not a warning.
 
     Returns
     -------
@@ -328,10 +379,12 @@ def docstring_auditor(
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
     """
     if os.path.isfile(path):
-        error_count, warning_count = process_file(path, model, code_block_name)
+        error_count, warning_count = process_file(
+            path, model, auto_fix, code_block_name
+        )
     elif os.path.isdir(path):
         error_count, warning_count = process_directory(
-            path, model, ignore_dirs, code_block_name
+            path, model, auto_fix, ignore_dirs, code_block_name
         )
     else:
         error_text = "Invalid path. Please provide a valid file or directory path."
