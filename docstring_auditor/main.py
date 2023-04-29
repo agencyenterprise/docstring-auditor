@@ -179,6 +179,22 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
 
 
 def apply_solution(file_path: str, old_function: str, new_function: str):
+    """
+    Replace the old function with the new function in the given file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the .py file to analyze the functions' and methods' docstrings.
+    old_function : str
+        The old function to replace.
+    new_function : str
+        The new function to replace the old function with.
+
+    Returns
+    -------
+    None
+    """
     with open(file_path, "r") as file:
         content = file.read()
 
@@ -205,6 +221,8 @@ def process_file(
         The path to the .py file to analyze the functions' and methods' docstrings.
     model : str
         The name of the OpenAI model to use for the analysis.
+    auto_fix : bool
+        Whether to automatically fix the errors and warnings found in the docstrings.
     code_block_name : str
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
@@ -251,6 +269,8 @@ def process_directory(
         The path to the directory containing .py files to analyze the functions' docstrings.
     model : str
         The name of the OpenAI model to use for the docstring analysis.
+    auto_fix : bool
+        Whether to automatically fix the docstring errors and warnings.
     ignore_dirs : Optional[List[str]]
         A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
     code_block_name : str
@@ -344,6 +364,8 @@ def docstring_auditor(
     code_block_name : str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank. Default is an empty string.
+    auto_fix : bool, optional
+        If true, the program will incorporate the suggested changes into the original file, overwriting the existing docstring. Default is False. Suggestions are only applied if they are associated with an error, not a warning.
 
     Returns
     -------
