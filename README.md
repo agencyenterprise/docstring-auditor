@@ -105,6 +105,14 @@ int or float
 """
 ```
 
+## Parameters
+
+| Option             | Type           | Default | Purpose                                                                                                   |
+| ------------------ |----------------| ------- | --------------------------------------------------------------------------------------------------------- |
+| path               | click.Path     | file    | The path to the .py file or directory to analyze the functions' docstrings.                               |
+| --ignore-dirs      | click.STRING   | ["tests"]  | A list of directory names to ignore while processing .py files. Separate multiple directories with a space. |
+| --error-on-warnings| bool           | False   | If true, warnings will be treated as errors and included in the exit code count.                         |
+| --model            | click.STRING   | "gpt-4" | The OpenAI model to use for docstring analysis. Default is 'gpt-4'.                                        |
 
 ## GitHub Action
 
