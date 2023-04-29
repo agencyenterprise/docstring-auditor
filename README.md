@@ -21,6 +21,12 @@ Docstring Auditor leverages the advanced capabilities of GPT-4, a powerful langu
 
 With Docstring Auditor, you can trust that your documentation stays relevant, informative, and accessible to all members of your team, making collaboration smoother and more efficient than ever before.
 
+_Docstring Auditor_ can be utilized as a
+GitHub Action,
+a Docker container,
+command-line tool,
+or Python package.
+
 
 ## Features
 - Analyzes Python functions' docstrings in a given file
@@ -30,9 +36,25 @@ With Docstring Auditor, you can trust that your documentation stays relevant, in
 - Easy to use command-line interface
 
 
-## Installation
+## GitHub Action
 
-The easiest way to use Docstring Auditor is with Docker
+Docstring Auditor can be used as a GitHub Action to automatically analyze the docstrings in your Python codebase.
+To use Docstring Auditor as a GitHub Action, add the following to your workflow file:
+
+```yaml
+  - name: Docstring Auditor
+    uses: agencyenterprise/docstring-auditor@main
+    with:
+      openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
+      path: .
+```
+
+For an example of how to use Docstring Auditor, [see this workflow](https://github.com/agencyenterprise/docstring-auditor/blob/main/.github/workflows/test-workplace-action.yml).
+
+
+## Docker
+
+Docstring Auditor can be used with Docker
 
 1. Install [Docker](https://docs.docker.com/get-docker/)
 2. Run the following command:
@@ -49,7 +71,7 @@ docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-a
 docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-auditor module/file.py
 ```
 
-## Usage
+### Usage
 If you use the docker command above, Docstring Auditor will analyse all python files in your directory.
 If you wish for it to analyse a single file, pass in the file name with the repo prefix.
 For example, to analyse the file in  `src/module/file.py`...
@@ -59,7 +81,8 @@ docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-a
 ```
 The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
-## Example
+
+## Example of Docstring Auditor in Action
 Let's say you have a Python file called example.py with the following content:
 
 ```python

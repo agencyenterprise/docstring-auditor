@@ -15,6 +15,11 @@ inputs:
     description: "Path to the file or directory to run the action on"
     required: true
 
+  model:
+    description: "OpenAI model to use"
+    required: false
+    default: "gpt-3.5-turbo"
+
 runs:
   using: "composite"
   steps:
@@ -43,6 +48,6 @@ runs:
 
     - name: Execute
       shell: bash
-      run: hatch run docstring-auditor ${{ inputs.path }}
+      run: hatch run docstring-auditor --model ${{ inputs.model }} ${{ inputs.path }}
       env:
         OPENAI_API_KEY: ${{ inputs.openaiApiKey }}

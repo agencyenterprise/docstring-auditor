@@ -29,4 +29,4 @@ jobs:
         uses: agencyenterprise/docstring-auditor@main
         with:
           openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
-          path: docstring_auditor
+          path: .
