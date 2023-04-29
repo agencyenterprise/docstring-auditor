@@ -42,11 +42,6 @@ def extract_code_block(
     >>> for function_or_method in functions_and_methods:
     ...     print(function_or_method)
     ...     print('-' * 80)
-
-    Notes
-    -----
-    This function may not work correctly for all cases, especially if there are
-    nested functions or other complex structures.
     """
     with open(file_path, "r") as file:
         content = file.read()
@@ -146,7 +141,10 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
     Returns
     -------
     Tuple[int, int, str]
-        Returns a tuple containing the count of errors and warnings found in the docstring, and the proposed solution.
+        A tuple containing:
+            error_count (int): The count of errors found in the docstring.
+            warning_count (int): The count of warnings found in the docstring.
+            solution (str): The proposed solution.
     """
     function_name = response_dict["function"]
     error = response_dict["error"]
@@ -239,7 +237,7 @@ def process_file(
 
     Returns
     -------
-    Tuple[int, int]
+    tuple of (int, int)
         A tuple containing the total number of errors and warnings found in the docstrings of the functions and methods in the given file.
     """
     functions_and_methods = extract_code_block(file_path, code_block_name)
@@ -289,7 +287,7 @@ def process_directory(
     auto_fix : bool
         Whether to automatically fix the docstring errors and warnings.
     ignore_dirs : Optional[List[str]]
-        A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
+        A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory. If not provided, the default value is ['tests'].
     code_block_name : str
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
@@ -376,13 +374,13 @@ def docstring_auditor(
         A list of directory names to ignore while processing .py files.
     error_on_warnings : bool
         If true, warnings will be treated as errors and included in the exit code count.
-    model : str, optional
-        The OpenAI model to use for docstring analysis. Default is 'gpt-4'.
-    code_block_name : str, optional
+    model : str, optional, default='gpt-4'
+        The OpenAI model to use for docstring analysis.
+    code_block_name : str, optional, default=''
         The name of a single block of code that you want audited, rather than all the code blocks.
-        If you want all the code blocks audited, leave this blank. Default is an empty string.
-    auto_fix : bool, optional
-        If true, the program will incorporate the suggested changes into the original file, overwriting the existing docstring. Default is False. Suggestions are only applied if they are associated with an error, not a warning.
+        If you want all the code blocks audited, leave this blank.
+    auto_fix : bool, optional, default=False
+        If true, the program will incorporate the suggested changes into the original file, overwriting the existing docstring. Suggestions are only applied if they are associated with an error, not a warning.
 
     Returns
     -------
