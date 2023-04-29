@@ -20,6 +20,11 @@ inputs:
     required: false
     default: "gpt-4"
 
+  code-block-name:
+    description: "Single code block name to analyse"
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -48,6 +53,6 @@ runs:
 
     - name: Execute
       shell: bash
-      run: hatch run docstring-auditor --model ${{ inputs.model }} ${{ inputs.path }}
+      run: hatch run docstring-auditor --model ${{ inputs.model }} --code-block-name ${{ inputs.code-block-name }} ${{ inputs.path }}
       env:
         OPENAI_API_KEY: ${{ inputs.openaiApiKey }}
