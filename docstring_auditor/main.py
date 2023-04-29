@@ -4,6 +4,7 @@ import os
 import sys
 import re
 import click
+import time
 import ast
 import json
 from typing import List, Optional, Dict, Tuple
@@ -14,16 +15,16 @@ def extract_code_block(
     file_path: str, code_block_name: str = ""
 ) -> List[Optional[str]]:
     """
-    Extract functions and methods from a Python file.
+    Extract functions, methods, and classes from a Python file.
 
-    This function reads a .py file and extracts each of the functions and methods from the
+    This function reads a .py file and extracts each of the functions, methods, and classes from the
     file. It returns a list of strings, where each string contains the entire
-    code for a function or method, including the definition, docstring, and code.
+    code for a function, method, or class, including the definition, docstring, and code.
 
     Parameters
     ----------
     file_path : str
-        The path to the .py file to extract functions and methods from.
+        The path to the .py file to extract functions, methods, and classes from.
     code_block_name : str
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
@@ -32,21 +33,7 @@ def extract_code_block(
     -------
     List[Optional[str]]
         A list of strings, where each string contains the entire code for a
-        function or method, including the definition, docstring, and code.
-
-    Examples
-    --------
-    >>> file_path = 'path/to/your/python_file.py'
-    >>> functions_and_methods = extract_code_block(file_path)
-    >>> for function_or_method in functions_and_methods:
-    ...     print(function_or_method)
-    ...     print('-' * 80)
-
-    Notes
-    -----
-    This function may not work correctly for all cases, especially if there are
-    nested functions or other complex structures.
-    """
+        function, method, or class, including the definition, docstring, and code."""
     with open(file_path, "r") as file:
         content = file.read()
 
@@ -110,7 +97,7 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
         '    "function": "Return the name of the function.",\n'
         '    "error": "Describe any errors in the docstring. For example, if any functionality is in the code but not in the docs. Or if any functionality is described in the docs, but does not exist in the code. If you find no errors, return an empty string.",\n'
         f'    "warning": "Describe any concerns, but not errors in the documentation. For example, possible typos, grammar errors, if the docstring does not follow the {DESIRED_DOCSTRING_STYLE} convention. If you find no warnings, return an empty string.",\n'
-        '    "solution": "If there were any errors, place the corrected docstring here. Do not include modifications to the code, only include the improved docstring"\n'
+        '    "solution": "Place the corrected docstring here. Do not include modifications to the code, only include the improved docstring. Retain the triple quotes and indentation from the input data."\n'
         "}"
     )
 
@@ -251,8 +238,15 @@ def process_file(
             f"Processing code {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
         )
         assert isinstance(function_or_method, str)
-        critique = ask_for_critique(function_or_method, model)
-        errors, warnings, solution = report_concerns(critique)
+        for i in range(3):
+            try:
+                critique = ask_for_critique(function_or_method, model)
+                errors, warnings, solution = report_concerns(critique)
+                break
+            except Exception as e:
+                print(e)
+                print(f"Retrying in {2**i} seconds...")
+                time.sleep(2**i)
         error_count += errors
         warning_count += warnings
 
