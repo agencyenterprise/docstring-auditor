@@ -316,11 +316,11 @@ def docstring_auditor(
         A list of directory names to ignore while processing .py files.
     error_on_warnings : bool
         If true, warnings will be treated as errors and included in the exit code count.
-    model : str
+    model : str, optional
         The OpenAI model to use for docstring analysis. Default is 'gpt-4'.
-    code_block_name : str
+    code_block_name : str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
-        If you want all the code blocks audited, leave this blank.
+        If you want all the code blocks audited, leave this blank. Default is an empty string.
 
     Returns
     -------
