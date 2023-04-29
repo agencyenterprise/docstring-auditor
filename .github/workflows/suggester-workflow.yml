@@ -49,12 +49,15 @@ jobs:
           reviewdog_version: latest
 
       - name: reviewdog
+        env:
+            REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TMPFILE=$(mktemp)
           git diff >"${TMPFILE}"
           git stash -u && git stash drop
           reviewdog -f=diff -f.diff.strip=1 -reporter=github-pr-review < "${TMPFILE}"
-
+        
+          
       - name: suggester
         uses: reviewdog/action-suggester@v1
         with:
