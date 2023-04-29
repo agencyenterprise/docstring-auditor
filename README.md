@@ -152,19 +152,7 @@ docker run -it --rm -e OPENAI_API_KEY=sk-XXXX -v /Path/to/code:/repo docstring-a
 The tool will then analyze the functions' docstrings in the specified file and display the critiques and suggestions for improvement.
 
 
-## Limitations
-
-1. There is currently no checking for malformed json from GPT4. Occasionaly, GPT4 will return a bad json and the program will crash.
-2. There is no rate limiting on the GPT4 calls.
-
-
-## Contributing
-We welcome contributions to Docstring Auditor! If you'd like to contribute, please fork the repository and submit a pull request with your changes. We also appreciate bug reports and feature requests submitted through the GitHub issues page.
-
-
-## Advanced Usage
-
-### Local Installation
+## Local Installation
 You can also run Docstring Auditor locally by following these steps:
 
 1. Install [Python 3.6+](https://www.python.org/downloads/)
@@ -174,3 +162,11 @@ You can also run Docstring Auditor locally by following these steps:
 5. Run the package `hatch run docstring-auditor /path/to/your/python_file.py`
 
 
+## Limitations
+
+1. There is currently no checking for malformed json from GPT4. Occasionaly, GPT4 will return a bad json and the program will crash.
+2. There is no rate limiting on the GPT4 calls.
+
+
+## Contributing
+We welcome contributions to Docstring Auditor! If you'd like to contribute, please fork the repository and submit a pull request with your changes. We also appreciate bug reports and feature requests submitted through the GitHub issues page.
