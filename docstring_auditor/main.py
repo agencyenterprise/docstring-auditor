@@ -200,7 +200,10 @@ def apply_solution(file_path: str, old_function: str, new_function: str):
 
     # Extract the old and new docstrings
     old_docstring = re.search(r'""".*?"""', old_function, flags=re.DOTALL).group(0)  # type: ignore
-    new_docstring = re.search(r'""".*?"""', new_function, flags=re.DOTALL).group(0)  # type: ignore
+    if '"""' in new_function:
+        new_docstring = re.search(r'""".*?"""', new_function, flags=re.DOTALL).group(0)  # type: ignore
+    else:
+        new_docstring = new_function
 
     # Replace the old docstring with the new docstring
     updated_content = content.replace(old_docstring, new_docstring)
