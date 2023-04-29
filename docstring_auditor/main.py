@@ -177,6 +177,7 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
 
     return error_count, warning_count, solution
 
+
 def apply_solution(file_path: str, old_function: str, new_function: str):
     with open(file_path, "r") as file:
         content = file.read()
@@ -185,6 +186,7 @@ def apply_solution(file_path: str, old_function: str, new_function: str):
 
     with open(file_path, "w") as file:
         file.write(content)
+
 
 def process_file(
     file_path: str, model: str, auto_fix: bool, code_block_name: str = ""
@@ -272,7 +274,9 @@ def process_directory(
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                errors, warnings = process_file(file_path, model, code_block_name)
+                errors, warnings = process_file(
+                    file_path, model, auto_fix, code_block_name
+                )
                 error_count += errors
                 warning_count += warnings
 
@@ -347,7 +351,9 @@ def docstring_auditor(
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
     """
     if os.path.isfile(path):
-        error_count, warning_count = process_file(path, model, auto_fix, code_block_name)
+        error_count, warning_count = process_file(
+            path, model, auto_fix, code_block_name
+        )
     elif os.path.isdir(path):
         error_count, warning_count = process_directory(
             path, model, auto_fix, ignore_dirs, code_block_name

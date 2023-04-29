@@ -41,7 +41,7 @@ def sample_function(x, y):
         The sum of x and y.
     """
     return x + y
-'''
+''',
     }
 
     with patch("docstring_auditor.main.ask_for_critique", return_value=sample_response):
@@ -110,7 +110,7 @@ def function_two(x, y):
         The result of x - y.
     """
     return x - y
-'''
+''',
     }
 
     with patch("docstring_auditor.main.ask_for_critique", return_value=sample_response):
@@ -120,7 +120,10 @@ def function_two(x, y):
 
         # Call the docstring_auditor function with auto_fix=True and code_block_name="function_two"
         runner = CliRunner()
-        result = runner.invoke(docstring_auditor, ["--auto-fix", "--code-block-name", "function_two", str(temp_file)])
+        result = runner.invoke(
+            docstring_auditor,
+            ["--auto-fix", "--code-block-name", "function_two", str(temp_file)],
+        )
 
         # read temp_file
         temp_file_contents = temp_file.read_text()
