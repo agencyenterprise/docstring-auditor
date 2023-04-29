@@ -109,10 +109,11 @@ int or float
 
 | Option             | Type          | Default   | Purpose                                                                                                     |
 | ------------------ |---------------| --------- | ----------------------------------------------------------------------------------------------------------- |
-| path               | click.Path    | file      | The path to the .py file or directory to analyze the functions' docstrings.                                 |
-| --ignore-dirs      | click.STRING  | ["tests"] | A list of directory names to ignore while processing .py files. Separate multiple directories with a space. |
-| --error-on-warnings| bool          | False     | If true, warnings will be treated as errors and included in the exit code count.                            |
-| --model            | click.STRING  | "gpt-4"   | The OpenAI model to use for docstring analysis. Default is 'gpt-4'.                                         |
+| path               | Path          | file      | The path to the .py file or directory to analyze the functions' docstrings.                                 |
+| --ignore-dirs      | String        | ["tests"] | A list of directory names to ignore while processing .py files. Separate multiple directories with a space. |
+| --error-on-warnings| Bool          | False     | If true, warnings will be treated as errors and included in the exit code count.                            |
+| --model            | String        | "gpt-4"   | The OpenAI model to use for docstring analysis. Default is 'gpt-4'.                                         |
+| --code-block-name  | String        | ""        | The name of the block you wanted audited. Leave blank to audit all code blocks.                             |
 
 ## GitHub Action
 
@@ -125,6 +126,9 @@ To use Docstring Auditor as a GitHub Action, add the following to your workflow 
     with:
       openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
       path: .
+      code-block-name: docstring_auditor
+      model: gpt-4
+      ignore-dirs: tests
 ```
 
 For an example of how to use Docstring Auditor, [see this workflow](https://github.com/agencyenterprise/docstring-auditor/blob/main/.github/workflows/test-workplace-action.yml).
