@@ -9,7 +9,9 @@ from typing import List, Optional, Dict, Tuple
 import openai
 
 
-def extract_code_block(file_path: str) -> List[Optional[str]]:
+def extract_code_block(
+    file_path: str, code_block_name: str = ""
+) -> List[Optional[str]]:
     """
     Extract functions and methods from a Python file.
 
@@ -21,6 +23,9 @@ def extract_code_block(file_path: str) -> List[Optional[str]]:
     ----------
     file_path : str
         The path to the .py file to extract functions and methods from.
+    code_block_name : str
+        The name of a single block of code that you want audited, rather than all the code blocks.
+        If you want all the code blocks audited, leave this blank.
 
     Returns
     -------
@@ -45,15 +50,17 @@ def extract_code_block(file_path: str) -> List[Optional[str]]:
         content = file.read()
 
     tree = ast.parse(content)
-    functions_and_methods = [
-        ast.get_source_segment(content, func)
-        for func in tree.body
-        if isinstance(func, (ast.FunctionDef, ast.ClassDef))
-    ]
+    functions_and_methods = []
+
+    for func in tree.body:
+        if isinstance(func, (ast.FunctionDef, ast.ClassDef)):
+            if code_block_name == "" or func.name == code_block_name:
+                functions_and_methods.append(ast.get_source_segment(content, func))
 
     for cls in [node for node in tree.body if isinstance(node, ast.ClassDef)]:
         for method in [node for node in cls.body if isinstance(node, ast.FunctionDef)]:
-            functions_and_methods.append(ast.get_source_segment(content, method))
+            if code_block_name == "" or method.name == code_block_name:
+                functions_and_methods.append(ast.get_source_segment(content, method))
 
     return functions_and_methods
 
@@ -171,7 +178,9 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int]:
     return error_count, warning_count
 
 
-def process_file(file_path: str, model: str) -> Tuple[int, int]:
+def process_file(
+    file_path: str, model: str, code_block_name: str = ""
+) -> Tuple[int, int]:
     """
     Process a single Python file and analyze its functions' and methods' docstrings.
 
@@ -186,13 +195,16 @@ def process_file(file_path: str, model: str) -> Tuple[int, int]:
         The path to the .py file to analyze the functions' and methods' docstrings.
     model : str
         The name of the OpenAI model to use for the analysis.
+    code_block_name : str
+        The name of a single block of code that you want audited, rather than all the code blocks.
+        If you want all the code blocks audited, leave this blank.
 
     Returns
     -------
     Tuple[int, int]
         A tuple containing the total number of errors and warnings found in the docstrings of the functions and methods in the given file.
     """
-    functions_and_methods = extract_code_block(file_path)
+    functions_and_methods = extract_code_block(file_path, code_block_name)
 
     error_count = 0
     warning_count = 0
@@ -211,7 +223,10 @@ def process_file(file_path: str, model: str) -> Tuple[int, int]:
 
 
 def process_directory(
-    directory_path: str, model: str, ignore_dirs: Optional[List[str]] = None
+    directory_path: str,
+    model: str,
+    ignore_dirs: Optional[List[str]] = None,
+    code_block_name: str = "",
 ) -> Tuple[int, int]:
     """
     Recursively process all .py files in a directory and its subdirectories, ignoring specified directories.
@@ -224,6 +239,9 @@ def process_directory(
         The name of the OpenAI model to use for the docstring analysis.
     ignore_dirs : Optional[List[str]]
         A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
+    code_block_name : str
+        The name of a single block of code that you want audited, rather than all the code blocks.
+        If you want all the code blocks audited, leave this blank.
 
     Returns
     -------
@@ -242,7 +260,7 @@ def process_directory(
         for file in files:
             if file.endswith(".py"):
                 file_path = os.path.join(root, file)
-                errors, warnings = process_file(file_path, model)
+                errors, warnings = process_file(file_path, model, code_block_name)
                 error_count += errors
                 warning_count += warnings
 
@@ -270,8 +288,18 @@ def process_directory(
     default="gpt-4",
     help="The OpenAI model to use for docstring analysis. Default is 'gpt-4'.",
 )
+@click.option(
+    "--code-block-name",
+    type=click.STRING,
+    default="",
+    help="The name of a single block of code that you want audited, rather than all the code blocks.",
+)
 def docstring_auditor(
-    path: str, ignore_dirs: List[str], error_on_warnings: bool, model: str
+    path: str,
+    ignore_dirs: List[str],
+    error_on_warnings: bool,
+    model: str,
+    code_block_name: str,
 ):
     """
     Analyze Python functions' docstrings in a given file or directory and provide critiques and suggestions for improvement.
@@ -290,6 +318,9 @@ def docstring_auditor(
         If true, warnings will be treated as errors and included in the exit code count.
     model : str
         The OpenAI model to use for docstring analysis. Default is 'gpt-4'.
+    code_block_name : str
+        The name of a single block of code that you want audited, rather than all the code blocks.
+        If you want all the code blocks audited, leave this blank.
 
     Returns
     -------
@@ -297,9 +328,11 @@ def docstring_auditor(
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
     """
     if os.path.isfile(path):
-        error_count, warning_count = process_file(path, model)
+        error_count, warning_count = process_file(path, model, code_block_name)
     elif os.path.isdir(path):
-        error_count, warning_count = process_directory(path, model, ignore_dirs)
+        error_count, warning_count = process_directory(
+            path, model, ignore_dirs, code_block_name
+        )
     else:
         error_text = "Invalid path. Please provide a valid file or directory path."
         click.secho(error_text, fg="red")

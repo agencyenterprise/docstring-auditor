@@ -30,3 +30,4 @@ jobs:
         with:
           openaiApiKey: ${{ secrets.OPENAI_API_KEY }}
           path: .
+          code-block-name: docstring_auditor

@@ -217,3 +217,65 @@ class ChildClass(ParentClass1, ParentClass2):
     assert "def parent_method2(self):" in "".join(functions)
     assert "class ChildClass(ParentClass1, ParentClass2):" in "".join(functions)
     assert "def child_method(self):" in "".join(functions)
+
+
+def test_extract_code_block_single_function_by_name(cleanup):
+    content = """
+def test_function1():
+    return "successful"
+
+def test_function2():
+    return "successful"
+"""
+
+    file_path = create_temp_file(content)
+    functions = extract_code_block(file_path, code_block_name="test_function1")
+    assert len(functions) == 1
+    assert "def test_function1():" in functions[0]
+
+
+def test_extract_code_block_class_method_by_name(cleanup):
+    content = """
+class TestClass:
+    def method1(self):
+        return "method1"
+
+    def method2(self):
+        return "method2"
+"""
+
+    file_path = create_temp_file(content)
+    functions = extract_code_block(file_path, code_block_name="method1")
+    assert len(functions) == 1
+    assert "def method1(self):" in functions[0]
+
+
+def test_extract_code_block_class_by_name(cleanup):
+    content = """
+class TestClass1:
+    def method1(self):
+        return "method1"
+
+class TestClass2:
+    def method2(self):
+        return "method2"
+"""
+
+    file_path = create_temp_file(content)
+    functions = extract_code_block(file_path, code_block_name="TestClass1")
+    assert len(functions) == 1
+    assert "class TestClass1:" in functions[0]
+
+
+def test_extract_code_block_no_matching_name(cleanup):
+    content = """
+def test_function1():
+    return "successful"
+
+def test_function2():
+    return "successful"
+"""
+
+    file_path = create_temp_file(content)
+    functions = extract_code_block(file_path, code_block_name="non_existent_function")
+    assert len(functions) == 0
