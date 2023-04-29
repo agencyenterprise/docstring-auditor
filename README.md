@@ -23,7 +23,7 @@ With Docstring Auditor, you can trust that your documentation stays relevant, in
 
 _Docstring Auditor_ can be utilized as a
 [GitHub Action](#github-action),
-a [Docker container](#docker)
+a [Docker container](#docker), 
 [command-line tool](#local-installation),
 or [Python package](#local-installation).
 
