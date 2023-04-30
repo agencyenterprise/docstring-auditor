@@ -111,7 +111,22 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
         '    "function": "Return the name of the function.",\n'
         '    "error": "Describe any errors in the docstring. For example, if any functionality is in the code but not in the docs. Or if any functionality is described in the docs, but does not exist in the code. If you find no errors, return an empty string.",\n'
         f'    "warning": "Describe any concerns, but not errors in the documentation. For example, possible typos, grammar errors, if the docstring does not follow the {DESIRED_DOCSTRING_STYLE} convention. If you find no warnings, return an empty string.",\n'
-        '    "solution": "If there were any errors, place the corrected docstring here. Do not include modifications to the code, only include the improved docstring"\n'
+        '    "solution": "Place the corrected docstring here. Do not include modifications to the code, only include the improved docstring. Retain the triple quotes and indentation from the input data."\n'
+        "}\n\n"
+        "Example response:\n"
+        "{\n"
+        '    "function": "example_function",\n'
+        '    "error": "The docstring excludes functionality related to the optional argument `y`. The docstring mentions a nonexistent `z` parameter.",\n'
+        '    "warning": "The docstring does not follow the desired style and has a grammar error in the description.",\n'
+        '    "solution": "def example_function(x, y=None):\\n\\n'
+        '    """\\n'
+        '    Compute the sum of x and y if y is provided, otherwise return x.\\n\\n'
+        '    Parameters:\\n'
+        '        x (int): The first number to be added.\\n'
+        '        y (int, optional): The second number to be added. Defaults to None.\\n\\n'
+        '    Returns:\\n'
+        '        int: The sum of x and y, or x if y is not provided.\\n'
+        '    """\\n"\n'
         "}"
     )
 
