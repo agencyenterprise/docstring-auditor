@@ -15,9 +15,9 @@ def extract_code_block(
     file_path: str, code_block_name: str = ""
 ) -> List[Optional[str]]:
     """
-    Extract functions and methods from a Python file.
+    Extract functions and class methods from a Python file.
 
-    This function reads a .py file and extracts each of the functions and methods from the
+    This function reads a .py file and extracts each of the functions and class methods from the
     file. It returns a list of strings, where each string contains the entire
     code for a function or method, including the definition, docstring, and code. If a specific
     code block name is provided, only that block will be extracted.
@@ -25,7 +25,7 @@ def extract_code_block(
     Parameters
     ----------
     file_path: str
-        The path to the .py file to extract functions and methods from.
+        The path to the .py file to extract functions and class methods from.
     code_block_name: str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank. Defaults to ''.
@@ -34,7 +34,7 @@ def extract_code_block(
     -------
     List[Optional[str]]:
         A list of strings, where each string contains the entire code for a
-        function or method, including the definition, docstring, and code.
+        function or class method, including the definition, docstring, and code.
     """
     with open(file_path, "r") as file:
         content = file.read()
@@ -175,7 +175,7 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
         "Please provide verbose descriptions and ensure no assumptions are made in the documentation. "
         "\n"
         "Here is an optimal example of a numpydoc string:\n"
-        '\n'
+        "\n"
         f"{EXAMPLE_NUMPYDOC}"
     )
 
@@ -203,12 +203,12 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
         '    "warning": "The docstring does not follow the desired style and has a grammar error in the description.",\n'
         '    "solution": "def example_function(x, y=None):\\n\\n'
         '    """\\n'
-        '    Compute the sum of x and y if y is provided, otherwise return x.\\n\\n'
-        '    Parameters:\\n'
-        '        x (int): The first number to be added.\\n'
-        '        y (int, optional): The second number to be added. Defaults to None.\\n\\n'
-        '    Returns:\\n'
-        '        int: The sum of x and y, or x if y is not provided.\\n'
+        "    Compute the sum of x and y if y is provided, otherwise return x.\\n\\n"
+        "    Parameters:\\n"
+        "        x (int): The first number to be added.\\n"
+        "        y (int, optional): The second number to be added. Defaults to None.\\n\\n"
+        "    Returns:\\n"
+        "        int: The sum of x and y, or x if y is not provided.\\n"
         '    """\\n"\n'
         "}"
     )
@@ -495,6 +495,16 @@ def docstring_auditor(
     None
         The function does not return any value. It prints the critiques and suggestions for the docstrings in the given file or directory.
     """
+    print(f"Analyzing {path} using the {model} model...")
+    if ignore_dirs:
+        print(f"  - Ignoring directories: {ignore_dirs}")
+    if code_block_name:
+        print(f"  - Only analyzing code block {code_block_name}.")
+    if auto_fix:
+        print("  - Auto-fix is enabled. Files may be modified.")
+    if error_on_warnings:
+        print("  - Warnings will be treated as errors.")
+
     if os.path.isfile(path):
         error_count, warning_count = process_file(
             path, model, auto_fix, code_block_name
