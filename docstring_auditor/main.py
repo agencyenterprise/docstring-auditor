@@ -23,30 +23,17 @@ def extract_code_block(
 
     Parameters
     ----------
-    file_path : str
+    file_path: str
         The path to the .py file to extract functions and methods from.
-    code_block_name : str
+    code_block_name: str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
-        If you want all the code blocks audited, leave this blank.
+        If you want all the code blocks audited, leave this blank. Defaults to ''.
 
     Returns
     -------
-    List[Optional[str]]
+    List[Optional[str]]:
         A list of strings, where each string contains the entire code for a
         function or method, including the definition, docstring, and code.
-
-    Examples
-    --------
-    >>> file_path = 'path/to/your/python_file.py'
-    >>> functions_and_methods = extract_code_block(file_path)
-    >>> for function_or_method in functions_and_methods:
-    ...     print(function_or_method)
-    ...     print('-' * 80)
-
-    Notes
-    -----
-    This function may not work correctly for all cases, especially if there are
-    nested functions or other complex structures.
     """
     with open(file_path, "r") as file:
         content = file.read()
@@ -155,13 +142,13 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
 
     Parameters
     ----------
-    response_dict : Dict[str, str]
+    response_dict : dict
         A dictionary containing the function name, error, warning, and solution.
 
     Returns
     -------
-    Tuple[int, int]
-        Returns a tuple containing the count of errors and warnings found in the docstring.
+    tuple
+        Returns a tuple containing the count of errors and warnings found in the docstring, and the proposed solution.
     """
     function_name = response_dict["function"]
     error = response_dict["error"]
@@ -248,9 +235,9 @@ def process_file(
         The name of the OpenAI model to use for the analysis.
     auto_fix : bool
         Whether to automatically fix the errors and warnings found in the docstrings.
-    code_block_name : str
+    code_block_name : str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
-        If you want all the code blocks audited, leave this blank.
+        If you want all the code blocks audited, leave this blank. Defaults to "".
 
     Returns
     -------
@@ -307,9 +294,9 @@ def process_directory(
         The name of the OpenAI model to use for the docstring analysis.
     auto_fix : bool
         Whether to automatically fix the docstring errors and warnings.
-    ignore_dirs : Optional[List[str]]
+    ignore_dirs : Optional[List[str]], optional
         A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
-    code_block_name : str
+    code_block_name : str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
 
