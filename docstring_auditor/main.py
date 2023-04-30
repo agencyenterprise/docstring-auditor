@@ -19,7 +19,8 @@ def extract_code_block(
 
     This function reads a .py file and extracts each of the functions and methods from the
     file. It returns a list of strings, where each string contains the entire
-    code for a function or method, including the definition, docstring, and code.
+    code for a function or method, including the definition, docstring, and code. If a specific
+    code block name is provided, only that block will be extracted.
 
     Parameters
     ----------
@@ -74,14 +75,108 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
 
     DESIRED_DOCSTRING_STYLE = "numpydoc"
 
+    # Example taken from https://numpydoc.readthedocs.io/en/latest/example.html
+    EXAMPLE_NUMPYDOC = r"""Summarize the function in one line.
+
+    Several sentences providing an extended description. Refer to
+    variables using back-ticks, e.g. `var`.
+
+    Parameters
+    ----------
+    var1 : array_like
+        Array_like means all those objects -- lists, nested lists, etc. --
+        that can be converted to an array.  We can also refer to
+        variables like `var1`.
+    var2 : int
+        The type above can either refer to an actual Python type
+        (e.g. ``int``), or describe the type of the variable in more
+        detail, e.g. ``(N,) ndarray`` or ``array_like``.
+    *args : iterable
+        Other arguments.
+    long_var_name : {'hi', 'ho'}, optional
+        Choices in brackets, default first when optional.
+
+    Returns
+    -------
+    type
+        Explanation of anonymous return value of type ``type``.
+    describe : type
+        Explanation of return value named `describe`.
+    out : type
+        Explanation of `out`.
+    type_without_description
+
+    Other Parameters
+    ----------------
+    only_seldom_used_keyword : int, optional
+        Infrequently used parameters can be described under this optional
+        section to prevent cluttering the Parameters section.
+    **kwargs : dict
+        Other infrequently used keyword arguments. Note that all keyword
+        arguments appearing after the first parameter specified under the
+        Other Parameters section, should also be described under this
+        section.
+
+    Raises
+    ------
+    BadException
+        Because you shouldn't have done that.
+
+    See Also
+    --------
+    numpy.array : Relationship (optional).
+    numpy.ndarray : Relationship (optional), which could be fairly long, in
+                    which case the line wraps here.
+    numpy.dot, numpy.linalg.norm, numpy.eye
+
+    Notes
+    -----
+    Notes about the implementation algorithm (if needed).
+
+    This can have multiple paragraphs.
+
+    You may include some math:
+
+    .. math:: X(e^{j\omega } ) = x(n)e^{ - j\omega n}
+
+    And even use a Greek symbol like :math:`\omega` inline.
+
+    References
+    ----------
+    Cite the relevant literature, e.g. [1]_.  You may also cite these
+    references in the notes section above.
+
+    .. [1] O. McNoleg, "The integration of GIS, remote sensing,
+       expert systems and adaptive co-kriging for environmental habitat
+       modelling of the Highland Haggis using object-oriented, fuzzy-logic
+       and neural-network techniques," Computers & Geosciences, vol. 22,
+       pp. 585-588, 1996.
+
+    Examples
+    --------
+    These are written in doctest format, and should illustrate how to
+    use the function.
+
+    >>> a = [1, 2, 3]
+    >>> print([x + 3 for x in a])
+    [4, 5, 6]
+    >>> print("a\nb")
+    a
+    b
+    """
+
     PROMPT_SYSTEM = (
         "You are a coding assistant. "
         "You are detail orientated and precise. "
-        "You have extensive knowledge of all coding languages and packages."
-        "You will review the documentation for python functions that I provide."
-        "The documentation you are helping to write is written for someone with very little coding experience."
-        "Do not provide errors or warnings about imports."
-        "Please provide verbose descriptions and ensure no assumptions are made in the documentation."
+        "You have extensive knowledge of all coding languages and packages. "
+        "You will review the documentation for python functions that I provide. "
+        "The documentation you are helping to write is written for someone with very little coding experience. "
+        "Do not provide errors or warnings about imports. "
+        "Please provide verbose descriptions and ensure no assumptions are made in the documentation. "
+        "\n"
+        "Here is an optimal example of a numpydoc string:\n"
+        '\n'
+        f"{EXAMPLE_NUMPYDOC}"
     )
 
     PROMPT_QUERY = (
@@ -91,6 +186,7 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
         "Does it exclude any functionality in the description? "
         "Would an extended summary help the user understand the function better? Be verbose. "
         "Is there adequate description of types and defaults? "
+        "Not all aspects of the docstring are required (e.g. examples, references, see also, other parameters). But any included sections should be correct. "
         "Or does it document functionality that does not exist in the code?\n\n"
         "Do not provide errors or warnings about imports.\n\n"
         "Provide your response as JSON with the following format (do not return any additional text):\n"
@@ -142,12 +238,12 @@ def report_concerns(response_dict: Dict[str, str]) -> Tuple[int, int, str]:
 
     Parameters
     ----------
-    response_dict : dict
+    response_dict : Dict[str, str]
         A dictionary containing the function name, error, warning, and solution.
 
     Returns
     -------
-    tuple
+    Tuple[int, int, str]
         Returns a tuple containing the count of errors and warnings found in the docstring, and the proposed solution.
     """
     function_name = response_dict["function"]
@@ -197,6 +293,10 @@ def apply_solution(file_path: str, old_function: str, new_function: str):
     new_function : str
         The source code of the function with the new triple-quoted docstring.
 
+    Returns
+    -------
+    None
+        This function does not return any value. It modifies the file in-place.
     """
     with open(file_path, "r") as file:
         content = file.read()
@@ -222,8 +322,8 @@ def process_file(
     """
     Process a single Python file and analyze its functions' and methods' docstrings.
 
-    This function processes the given Python file, extracts the functions and methods within it,
-    and analyzes their docstrings for errors and warnings.
+    This function processes the given Python file, extracts the functions and methods within it using the `extract_code_block` function,
+    and analyzes their docstrings for errors and warnings using the `ask_for_critique` and `report_concerns` functions.
     It then returns the total number of errors and warnings found in the
     docstrings of the functions and methods in the given file.
 
