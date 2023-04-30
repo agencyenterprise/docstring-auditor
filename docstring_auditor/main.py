@@ -5,6 +5,7 @@ import sys
 import re
 import click
 import ast
+import time
 import json
 from typing import List, Optional, Dict, Tuple
 import openai
@@ -266,8 +267,19 @@ def process_file(
             f"Processing code {idx + 1} of {len(functions_and_methods)} in file {file_path}..."
         )
         assert isinstance(function_or_method, str)
-        critique = ask_for_critique(function_or_method, model)
-        errors, warnings, solution = report_concerns(critique)
+        errors, warnings, solution = 0, 0, None
+        for i in range(3):
+            try:
+                critique = ask_for_critique(function_or_method, model)
+                errors, warnings, solution = report_concerns(critique)
+                break
+            except Exception as e:
+                print(e)
+                if i < 2:
+                    print(f"Retrying in {2 ** i} seconds...")
+                    time.sleep(2**i)
+                else:
+                    raise e
         error_count += errors
         warning_count += warnings
 
