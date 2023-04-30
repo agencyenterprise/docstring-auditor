@@ -23,9 +23,9 @@ def extract_code_block(
 
     Parameters
     ----------
-    file_path (str):
+    file_path: str
         The path to the .py file to extract functions and methods from.
-    code_block_name (str, optional):
+    code_block_name: str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank. Defaults to ''.
 
