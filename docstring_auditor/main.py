@@ -444,7 +444,7 @@ def process_directory(
 @click.option(
     "--model",
     type=click.STRING,
-    default="gpt-4",
+    default="gpt-4-1106-preview",
     help="The OpenAI model to use for docstring analysis. Default is 'gpt-4'.",
 )
 @click.option(
