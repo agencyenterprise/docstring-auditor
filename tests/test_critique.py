@@ -1,7 +1,9 @@
 import pytest
 from docstring_auditor.main import ask_for_critique
 from unittest.mock import MagicMock
-import openai
+import openai import OpenAI
+
+client = OpenAI()
 
 
 def mock_chatcompletion_create(*args, **kwargs):
