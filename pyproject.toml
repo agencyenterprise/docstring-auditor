@@ -31,13 +31,13 @@ docstring-auditor = "python docstring_auditor/main.py {args}"
 [tool.hatch.envs.default]
 dependencies = [
     "click",
-    "openai",
+    "openai==0.28",
 ]
 
 [tool.hatch.envs.dev]
 dependencies = [
     "click",
-    "openai",
+    "openai==0.28",
     "mypy",
     "black",
     "pytest",
