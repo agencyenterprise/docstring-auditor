@@ -1,7 +1,9 @@
 import pytest
 from docstring_auditor.main import ask_for_critique
 from unittest.mock import MagicMock
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 
 
 def mock_chatcompletion_create(*args, **kwargs):
@@ -26,7 +28,7 @@ def mock_chatcompletion_create(*args, **kwargs):
 
 @pytest.fixture(autouse=True)
 def openai_mock(monkeypatch):
-    monkeypatch.setattr(openai.ChatCompletion, "create", mock_chatcompletion_create)
+    monkeypatch.setattr(client.chat.completion, "create", mock_chatcompletion_create)
 
 
 def test_ask_for_critique():
@@ -160,7 +162,7 @@ def mock_chatcompletion_create_warning_and_solution(*args, **kwargs):
     ],
 )
 def openai_mock(monkeypatch, request):
-    monkeypatch.setattr(openai.ChatCompletion, "create", request.param)
+    monkeypatch.setattr(client.chat.completion, "create", request.param)
     return request  # Return the request object
 
 
