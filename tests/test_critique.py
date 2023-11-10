@@ -1,7 +1,7 @@
 import pytest
 from docstring_auditor.main import ask_for_critique
 from unittest.mock import MagicMock
-import openai import OpenAI
+from openai import OpenAI
 
 client = OpenAI()
 
