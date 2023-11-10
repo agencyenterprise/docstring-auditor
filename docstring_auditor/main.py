@@ -8,7 +8,9 @@ import ast
 import time
 import json
 from typing import List, Optional, Dict, Tuple
-import openai
+from openai import OpenAI
+
+client = OpenAI()
 
 
 def extract_code_block(
@@ -222,11 +224,11 @@ def ask_for_critique(function: str, model: str) -> Dict[str, str]:
         },
         {"role": "user", "content": function},
     ]
-    response = openai.ChatCompletion.create(
-        model=model, temperature=0.0, messages=messages
+    response = client.chat.completions.create(
+        model=model, temperature=0.0, messages=messages, response_format= { "type":"json_object" }
     )
 
-    response_str = response["choices"][0]["message"]["content"]
+    response_str = response.choices[0].message.content
     response_dict = json.loads(response_str)
 
     return response_dict
@@ -355,14 +357,14 @@ def process_file(
         )
         assert isinstance(function_or_method, str)
         errors, warnings, solution = 0, 0, None
-        for i in range(3):
+        for i in range(1):
             try:
                 critique = ask_for_critique(function_or_method, model)
                 errors, warnings, solution = report_concerns(critique)
                 break
             except Exception as e:
                 print(e)
-                if i < 2:
+                if i < 0:
                     print(f"Retrying in {2 ** i} seconds...")
                     time.sleep(2**i)
                 else:
@@ -380,7 +382,7 @@ def process_directory(
     directory_path: str,
     model: str,
     auto_fix: bool,
-    ignore_dirs: Optional[List[str]] = None,
+    ignore_dirs: Optional[List[str]] = ["tests"],
     code_block_name: str = "",
 ) -> Tuple[int, int]:
     """
@@ -391,11 +393,11 @@ def process_directory(
     directory_path : str
         The path to the directory containing .py files to analyze the functions' docstrings.
     model : str
-        The name of the OpenAI model to use for the docstring analysis.
+        The name of the model to use for the docstring analysis.
     auto_fix : bool
         Whether to automatically fix the docstring errors and warnings.
     ignore_dirs : Optional[List[str]], optional
-        A list of directory names to ignore while processing .py files. By default, it ignores the "tests" directory.
+        A list of directory names to ignore while processing .py files. Defaults to ['tests'].
     code_block_name : str, optional
         The name of a single block of code that you want audited, rather than all the code blocks.
         If you want all the code blocks audited, leave this blank.
@@ -405,9 +407,6 @@ def process_directory(
     Tuple[int, int]
         A tuple containing the total number of errors and warnings found in the docstrings of the .py files.
     """
-    if ignore_dirs is None:
-        ignore_dirs = ["tests"]
-
     error_count = 0
     warning_count = 0
 

@@ -48,4 +48,4 @@ jobs:
 
     - name: Run self test
       if : ${{ matrix.python-version == '3.11' }}
-      run: hatch run docstring-auditor --code-block-name docstring_auditor
+      run: hatch run docstring-auditor --code-block-name process_directory
